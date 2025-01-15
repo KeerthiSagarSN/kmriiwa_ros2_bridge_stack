@@ -1,4 +1,4 @@
-Header header
+std_msgs/Header header
 bool motion_enabled
 bool axes_mastered
 bool axes_gms_referenced

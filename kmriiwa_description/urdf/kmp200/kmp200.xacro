@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-
+<!-- TODO Make relative import for the mesh file, I am tired of not getting meshes, or put all the description in the main src file and use $(find package_name) -->
   <!-- Import Gazebo-settings -->
   <xacro:include filename="$(find kmriiwa_description)/urdf/kmp200/kmp200.gazebo.xacro" />
 
@@ -33,13 +33,13 @@
     	<origin rpy="0 0 0" xyz="0 0 0"/>
         <visual>
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/KMP200.dae"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/KMP200.dae"/>
           </geometry>
           <material name="White"/>
         </visual>
         <collision>
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/KMP200.dae"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/KMP200.dae"/>
           </geometry>
         </collision>
         <inertial>
@@ -68,14 +68,14 @@
         <visual>
           <origin xyz="0 0 0" rpy="3.1413 0 0"/>
           <geometry>
-              <mesh filename="package://kmriiwa_description/meshes/kmp200/sensors/visual/sick_lms1xx.dae" />
+              <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/sensors/visual/sick_lms1xx.dae" />
           </geometry>
           <material name="DarkGrey"/>
         </visual>
         <collision>
             <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://kmriiwa_description/meshes/kmp200/sensors/collision/sick_lms1xx.stl" />
+                <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/sensors/collision/sick_lms1xx.stl" />
             </geometry>
         </collision>
         <inertial>
@@ -94,14 +94,14 @@
         <visual>
           <origin xyz="0.0 0 0" rpy="0 3.1413 3.1413"/>
           <geometry>
-              <mesh filename="package://kmriiwa_description/meshes/kmp200/sensors/visual/sick_lms1xx.dae" />
+              <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/sensors/visual/sick_lms1xx.dae" />
           </geometry>
           <material name="DarkGrey"/>
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                  <mesh filename="package://kmriiwa_description/meshes/kmp200/sensors/collision/sick_lms1xx.stl" />
+                  <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/sensors/collision/sick_lms1xx.stl" />
             </geometry>
         </collision>
         <inertial>
@@ -114,7 +114,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
           </geometry>
         </visual>
         <collision>
@@ -129,7 +129,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
           </geometry>
         </visual>
         <collision>
@@ -144,7 +144,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
           </geometry>
         </visual>
         <collision>
@@ -159,7 +159,7 @@
         <visual>
           <origin xyz="0 0 0" rpy="0 0 0" />
           <geometry>
-            <mesh filename="package://kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
+            <mesh filename="file://$(find kmriiwa_description)/meshes/kmp200/wheels/omni_wheel_1.dae" scale="1.06695 1.06695 1.06695"/>
           </geometry>
         </visual>
         <collision>

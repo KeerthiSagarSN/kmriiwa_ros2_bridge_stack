@@ -1,13 +1,27 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>kmriiwa_bringup</name>
   <version>0.0.0</version>
   <description>The kmriiwa_bringup package</description>
+  
+  
+  <author email="keerthi.sagar@imr.ie">keerthis</author>
   <author email="hatem.fakhruldeen@gmail.com">stoic-roboticist</author>
-  <maintainer email="hatem.fakhruldeen@gmail.com">stoic-roboticist</maintainer>
+  <maintainer email="keerthi.sagar@imr.ie">keerthis</maintainer>
   
   <license>TODO</license>
   
-  <buildtool_depend>catkin</buildtool_depend>
-  <exec_depend>robot_state_publisher</exec_depend>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  
+  <depend>robot_state_publisher</depend>
+  <depend>xacro</depend>
+  <exec_depend>ros2launch</exec_depend>
+  
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

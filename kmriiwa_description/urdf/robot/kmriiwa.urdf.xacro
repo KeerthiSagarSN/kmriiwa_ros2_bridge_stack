@@ -11,8 +11,8 @@
   <xacro:property name="arm_base_flange_y_pos" value="-0.184" />
   <xacro:property name="arm_base_flange_z_pos" value="-0.01" />
   <xacro:property name="arm_base_flange_yew" value="-1.5708" />
-  <xacro:property name="riser_flange_height" value="0.26" />
-  <xacro:property name="riser_flange_radius" value="0.121" />
+  <xacro:property name="riser_flange_height" value="0.0" />   <!--Changed stuff here and made zero -->
+  <xacro:property name="riser_flange_radius" value="0.0" />
   <xacro:property name="flange_origin_xyz" value="${arm_base_flange_x_pos} ${arm_base_flange_y_pos} ${arm_base_flange_z_pos+riser_flange_height/2}"/>
   <xacro:property name="flange_origin_rpy" value="0 0 ${arm_base_flange_yew}"/>
 

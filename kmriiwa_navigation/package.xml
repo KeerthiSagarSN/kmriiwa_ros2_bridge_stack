@@ -1,24 +1,34 @@
 <?xml version="1.0"?>
-<package format="2">
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
   <name>kmriiwa_navigation</name>
   <version>0.0.0</version>
   <description>The kmriiwa_navigation package</description>
+  <author email="keerthi.sagar@imr.ie">keerthis</author>
   <author email="hatem.fakhruldeen@gmail.com">stoic-roboticist</author>
-  <maintainer email="hatem.fakhruldeen@gmail.com">stoic-roboticist</maintainer>
+  <maintainer email="keerthi.sagar@imr.ie">keerthis</maintainer>
   
   <license>TODO</license>
 
+  <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <buildtool_depend>catkin</buildtool_depend>
-  <build_depend>roslaunch</build_depend>
-  <exec_depend>gmapping</exec_depend>
-  <exec_depend>move_base</exec_depend>
-  <exec_depend>amcl</exec_depend>
-  <exec_depend>map_server</exec_depend>
-  <exec_depend>navfn</exec_depend>
-  <exec_depend>base_local_planner</exec_depend>
+  <!-- Nav2 dependencies -->
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav2_bt_navigator</exec_depend>
+  <exec_depend>nav2_planner</exec_depend>
+  <exec_depend>nav2_controller</exec_depend>
+  <exec_depend>nav2_behaviors</exec_depend>
+  <exec_depend>nav2_regulated_pure_pursuit_controller</exec_depend>
+  <exec_depend>nav2_map_server</exec_depend>
+  <exec_depend>nav2_amcl</exec_depend>
+  <exec_depend>slam_toolbox</exec_depend>
   <exec_depend>teb_local_planner</exec_depend>
-  <exec_depend>navfn</exec_depend>
   <exec_depend>ira_laser_tools</exec_depend>
 
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
 </package>

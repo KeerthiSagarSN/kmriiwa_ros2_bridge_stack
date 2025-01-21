@@ -10,6 +10,7 @@ install(
     launch
     config
     maps
+    scripts
   DESTINATION share/${PROJECT_NAME}
 )
 

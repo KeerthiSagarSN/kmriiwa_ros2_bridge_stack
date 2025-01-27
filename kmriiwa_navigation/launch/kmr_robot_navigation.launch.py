@@ -54,7 +54,12 @@ def generate_launch_description():
         name='controller_server',
         output='screen',
         parameters=[os.path.join(pkg_kmriiwa_nav, 'config', 'nav2_params.yaml')],
-        remappings=[('/cmd_vel', '/kmriiwa/base/command/cmd_vel')]
+        remappings=[
+            ('/cmd_vel', '/kmriiwa/base/command/cmd_vel'),
+            ('/odom', '/kmriiwa/base/state/odom'),  # Add odom remapping
+            ('/tf', '/tf'),
+            ('/tf_static', '/tf_static')
+        ]
     )
 
     # Planner Server
@@ -89,27 +94,27 @@ def generate_launch_description():
 
     # Single Lifecycle Manager for all navigation nodes
     nav_lifecycle_manager = Node(
-        package='nav2_lifecycle_manager',
-        executable='lifecycle_manager',
-        name='lifecycle_manager_navigation',
-        output='screen',
-        parameters=[{
-            'use_sim_time': False,
-            'autostart': True,
-            'node_names': [
-                'map_server',
-                'amcl',
-                'controller_server',
-                'planner_server',
-                'behavior_server',
-                'bt_navigator'
-            ],
-            'bond_timeout': 10.0,
-            'configure_timeout': 20.0,
-            'activate_timeout': 20.0,
-            'transform_timeout': 5.0
-        }]
-    )
+            package='nav2_lifecycle_manager',
+            executable='lifecycle_manager',
+            name='lifecycle_manager_navigation',
+            output='screen',
+            parameters=[{
+                'use_sim_time': False,
+                'autostart': True,
+                'node_names': [
+                    'map_server',
+                    'amcl',
+                    'controller_server',
+                    'planner_server',
+                    'behavior_server',
+                    'bt_navigator'
+                ],
+                'bond_timeout': 15.0,
+                'configure_timeout': 60.0,
+                'activate_timeout': 60.0,
+                'transform_timeout': 15.0
+            }]
+        )
 
     # Include robot bringup launch file
     robot_bringup = IncludeLaunchDescription(

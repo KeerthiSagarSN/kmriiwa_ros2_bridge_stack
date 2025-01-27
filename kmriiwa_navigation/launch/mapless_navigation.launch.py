@@ -1,91 +1,78 @@
+#!/usr/bin/env python3
+
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, GroupAction, IncludeLaunchDescription
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import PushRosNamespace
+from launch_ros.actions import Node, PushRosNamespace
 from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
     # Get package directories
-    pkg_nav = get_package_share_directory('kmriiwa_navigation')
-    pkg_vis = get_package_share_directory('kmriiwa_vis')
+    nav_pkg_dir = get_package_share_directory('kmriiwa_navigation')
+    nav2_pkg_dir = get_package_share_directory('nav2_bringup')
 
-    # Declare all arguments
-    planner_arg = DeclareLaunchArgument(
-        'planner',
-        default_value='nav2_navfn_planner/NavfnPlanner',
-        description='Global planner to use'
-    )
-
-    controller_arg = DeclareLaunchArgument(
-        'controller',
-        default_value='teb_local_planner/TebLocalPlannerROS',
-        description='Local planner to use'
-    )
-
-    rviz_arg = DeclareLaunchArgument(
-        'rviz',
-        default_value='false',
-        description='Launch RViz'
-    )
-
-    use_namespace_arg = DeclareLaunchArgument(
+    # Declare launch arguments
+    declare_use_namespace = DeclareLaunchArgument(
         'use_namespace',
         default_value='true',
         description='Whether to use namespace'
     )
 
-    robot_name_arg = DeclareLaunchArgument(
+    declare_robot_name = DeclareLaunchArgument(
         'robot_name',
         default_value='kmriiwa',
         description='Robot name'
     )
 
-    # Include Nav2 launch file
-    nav2_launch = IncludeLaunchDescription(
+    declare_rviz = DeclareLaunchArgument(
+        'rviz',
+        default_value='false',
+        description='Start RViz'
+    )
+
+    # Include the Nav2 bringup launch
+    nav2_bringup = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            os.path.join(pkg_nav, 'launch', 'nav2_bringup.launch.py')
+            os.path.join(nav2_pkg_dir, 'launch', 'navigation_launch.py')
         ]),
         launch_arguments={
             'use_sim_time': 'false',
-            'map': '',  # Empty string for no static map
-            'planner': LaunchConfiguration('planner'),
-            'controller': LaunchConfiguration('controller'),
-            'use_namespace': LaunchConfiguration('use_namespace'),
-            'robot_name': LaunchConfiguration('robot_name')
+            'use_composition': 'True',
+            'params_file': os.path.join(nav_pkg_dir, 'config', 'nav2_params.yaml')
         }.items()
     )
 
-    # Create namespace group for visualization
-    viz_group = GroupAction([
-        # Push namespace if use_namespace is true
-        PushRosNamespace(
-            namespace=PythonExpression([
-                "'", LaunchConfiguration('robot_name'), "' if '",
-                LaunchConfiguration('use_namespace'), "' == 'true' else ''"
-            ])
-        ),
-        # Include visualization launch file
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([
-                os.path.join(pkg_vis, 'launch', 'navigation_view.launch.py')
-            ]),
-            condition=IfCondition(LaunchConfiguration('rviz')),
-            launch_arguments={
-                'use_sim_time': 'false',
-                'no_static_map': 'true'
-            }.items()
-        )
-    ])
+    # Include RViz launch if requested
+    rviz_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(get_package_share_directory('kmriiwa_vis'),
+            'launch', 'navigation_view.launch.py')
+        ]),
+        condition=IfCondition(LaunchConfiguration('rviz')),
+        launch_arguments={
+            'use_namespace': LaunchConfiguration('use_namespace'),
+            'namespace': LaunchConfiguration('robot_name')
+        }.items()
+    )
+
+    # Create the navigation group with namespace
+    navigation_group = GroupAction(
+        actions=[
+            PushRosNamespace(LaunchConfiguration('robot_name')),
+            nav2_bringup,
+            rviz_launch
+        ],
+        condition=IfCondition(LaunchConfiguration('use_namespace'))
+    )
 
     return LaunchDescription([
-        planner_arg,
-        controller_arg,
-        rviz_arg,
-        use_namespace_arg,
-        robot_name_arg,
-        nav2_launch,
-        viz_group
+        # Launch arguments
+        declare_use_namespace,
+        declare_robot_name,
+        declare_rviz,
+        # Navigation stack
+        navigation_group
     ])

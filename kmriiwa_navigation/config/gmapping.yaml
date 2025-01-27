@@ -1,5 +1,7 @@
-odom_frame: $(arg robot_name)_odom
-base_frame: $(arg robot_name)_base_link
+#odom_frame: $(arg robot_name)_odom
+odom_frame: kmriiwa_odom
+#base_frame: $(arg robot_name)_base_link
+base_frame: kmriiwa_base_footprint
 map_frame: map
 
 map_update_interval: 0.5 # Publish new map

@@ -1,7 +1,8 @@
 footprint: [[0.506, 0.315], [0.506, -0.315], [-0.506, -0.315], [-0.506, 0.315]]
 footprint_padding: 0.1
 
-robot_base_frame: $(arg robot_name)_base_link
+robot_base_frame: kmriiwa_base_footprint
+#robot_base_frame: $(arg robot_name)_base_link
 update_frequency: 5.0
 publish_frequency: 5.0
 transform_tolerance: 0.5

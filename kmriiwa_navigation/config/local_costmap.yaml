@@ -1,5 +1,6 @@
 local_costmap:
-  global_frame: $(arg robot_name)_odom
+  #global_frame: $(arg robot_name)_odom
+  global_frame: kmriiwa_odom
   static_map: false
   rolling_window: true
   width: 5

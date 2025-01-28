@@ -49,7 +49,7 @@ def main():
     navigator = NavigationClient()
     
     # Send goal - modify these coordinates as needed
-    navigator.send_goal(8.0, 2.42165, 0.0)  # Move forward 
+    navigator.send_goal(11.13, 1.0, 0.0)  # Move forward 
     
     rclpy.spin(navigator)
     

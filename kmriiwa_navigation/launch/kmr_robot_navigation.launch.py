@@ -56,7 +56,7 @@ def generate_launch_description():
         parameters=[os.path.join(pkg_kmriiwa_nav, 'config', 'nav2_params.yaml')],
         remappings=[
             ('/cmd_vel', '/kmriiwa/base/command/cmd_vel'),
-            ('/odom', '/kmriiwa/base/state/odom'),  # Add odom remapping
+            #('/odom', '/kmriiwa/base/state/odom'),  # Add odom remapping
             ('/tf', '/tf'),
             ('/tf_static', '/tf_static')
         ]
@@ -124,7 +124,7 @@ def generate_launch_description():
     )
 
     # Create RViz node with navigation configuration
-    rviz_config = os.path.join(pkg_kmriiwa_vis, 'rviz', 'robot.rviz')
+    rviz_config = os.path.join(pkg_kmriiwa_vis, 'rviz', 'robot_nav.rviz')
     rviz = Node(
         package='rviz2',
         executable='rviz2',

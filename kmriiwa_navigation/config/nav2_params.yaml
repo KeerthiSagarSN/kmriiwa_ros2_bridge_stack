@@ -189,13 +189,15 @@ local_costmap:
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.1
+      #robot_radius: 0.22 # KMRIIWA not round base , but polygon chaning this
+      footprint: "[[0.60,0.0375],[0.60,-0.0375],[-0.60,-0.0375],[-0.60,0.0375]]"
       clearing_rotation_allowed: true
       plugins: ["obstacle_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        #inflation_radius: 0.55
+        inflation_radius: 0.35
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -222,7 +224,9 @@ global_costmap:
       global_frame: map
       robot_base_frame: kmriiwa_base_footprint
       use_sim_time: false
-      robot_radius: 0.22
+      #robot_radius: 0.22
+      # footprint: "[[0.60,0.375],[0.60,-0.375],[-0.60,-0.375],[-0.60,0.375]]" - Measuring tape sjit
+      footprint: "[[0.60,0.355],[0.60,-0.355],[-0.60,-0.355],[-0.60,0.355]]"
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -246,7 +250,8 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        #inflation_radius: 0.55
+        inflation_radius: 0.35
       always_send_full_costmap: True
 rviz:
   ros__parameters:

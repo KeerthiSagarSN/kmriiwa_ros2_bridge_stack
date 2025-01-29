@@ -6,6 +6,8 @@ from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
 from rclpy.duration import Duration
 
+
+## Template file to try 
 class NavigationClient(Node):
     def __init__(self):
         super().__init__('navigation_client')
@@ -16,7 +18,7 @@ class NavigationClient(Node):
         goal_msg.pose.header.frame_id = 'map'
         goal_msg.pose.header.stamp = self.get_clock().now().to_msg()
         
-        # Set the goal pose
+        # Goal pose, getting using Estimate pose
         goal_msg.pose.pose.position.x = float(x)
         goal_msg.pose.pose.position.y = float(y)
         goal_msg.pose.pose.position.z = 0.0
@@ -25,7 +27,7 @@ class NavigationClient(Node):
         # Wait for action server
         self._action_client.wait_for_server()
         
-        # Send goal
+        # Send goal to nav2 
         self.get_logger().info('Sending goal')
         self._send_goal_future = self._action_client.send_goal_async(goal_msg)
         self._send_goal_future.add_done_callback(self.goal_response_callback)
@@ -48,8 +50,8 @@ def main():
     rclpy.init()
     navigator = NavigationClient()
     
-    # Send goal - modify these coordinates as needed
-    navigator.send_goal(11.13, 1.0, 0.0)  # Move forward 
+    # Send goal - Testing thisfrom random place, seems to be ok
+    navigator.send_goal(5.63354778289795, 2.2772679328918457, 0.0)  # Move forward # x -   10.988336563110352 , y - 2.445468, z - 0
     
     rclpy.spin(navigator)
     

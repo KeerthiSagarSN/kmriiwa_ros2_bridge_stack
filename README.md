@@ -40,6 +40,11 @@ The developed stack supports multi-robot applications out of the box and as a re
 
 **Regardless of that, always make sure the *robot_name* argument is equivlent to the parameter *robot_name* set on the driver's application ProcessData running on the controller. If those are different, nothing will work**
 
+### Static transform between odom, map and robot_base_footprint
+Run this command before launching the navigation stack
+```
+ros2 run tf2_ros static_transform_publisher --x 0 --y 0 --z 0 --qx 0 --qy 0 --qz 0 --qw 1 --frame-id map --child-frame-id kmriiwa_odom & ros2 run tf2_ros static_transform_publisher --x 0 --y 0 --z 0 --qx 0 --qy 0 --qz 0 --qw 1 --frame-id kmriiwa_odom --child-frame-id kmriiwa_base_footprint
+```
  
 ### navigation and manipulation planning stack
 Launch the navigation node after sourcing the workspace, rviz file with all parameter visualization is launched:

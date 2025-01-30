@@ -18,7 +18,7 @@ def generate_launch_description():
     map_arg = DeclareLaunchArgument(
         'map',
         default_value=os.path.join(pkg_kmriiwa_nav, 'maps', 'bay3_map.yaml'),
-        description='Full path to map yaml file to load'
+        description='/home/imr/ros2_ws_coresense/src/kmriiwa_ros_stack/kmriiwa_navigation/maps/bay3_map.yaml' # Path to yaml file in the system
     )
 
     # Map Server Node

@@ -40,11 +40,11 @@ def generate_launch_description():
                 '/', LaunchConfiguration('robot_name'), '/base/state/LaserB1Scan ',
                 '/', LaunchConfiguration('robot_name'), '/base/state/LaserB4Scan'
             ],
-            'angle_min': (-135.0 * 3.1415) / 180.0,
-            'angle_max': (135.0 * 3.1415) / 180.0,
+            'angle_min': (-175.0 * 3.1415) / 180.0,
+            'angle_max': (175.0 * 3.1415) / 180.0,
             'angle_increment': (0.5 * 3.1415) / 180.0,
-            'scan_time': 0.5,
-            'range_min': 0.12,
+            'scan_time': 0.2,
+            'range_min': 0.05,
             'range_max': 30.0
             
         }]

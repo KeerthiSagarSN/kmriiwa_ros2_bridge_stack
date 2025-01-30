@@ -109,18 +109,18 @@ controller_server:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: -0.26 # Previously -0.26
-      min_vel_y: 0.0
+      min_vel_y: -0.2 # Seems to not work, even though omni
       max_vel_x: 0.26 # Previously 0.26
-      max_vel_y: 0.0
-      max_vel_theta: 1.0
-      min_speed_xy: 0.0
+      max_vel_y: 0.2 # Seems to not work, even though omni
+      max_vel_theta: 0.8 # Previously 1.0 - Very good speed but trip in emergency
+      min_speed_xy: -0.26 # Preopvilsy 0.0, seeing if this performs good
       max_speed_xy: 0.26
       min_speed_theta: 0.0
       acc_lim_x: 2.5
-      acc_lim_y: 0.0
+      acc_lim_y: 2.5 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
       acc_lim_theta: 3.2
       decel_lim_x: -2.5
-      decel_lim_y: 0.0
+      decel_lim_y: -2.5
       decel_lim_theta: -3.2
       vx_samples: 20
       vy_samples: 5
@@ -134,7 +134,8 @@ controller_server:
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.02
+      # BaseObstacle.scale: 0.02 - very close to obstacle
+      BaseObstacle.scale: 0.05
       PathAlign.scale: 32.0
       GoalAlign.scale: 24.0
       PathDist.scale: 32.0
@@ -196,8 +197,8 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        #inflation_radius: 0.55
-        inflation_radius: 0.35
+        #inflation_radius: 0.55 # Kept default
+        inflation_radius: 0.55
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
@@ -225,8 +226,8 @@ global_costmap:
       robot_base_frame: kmriiwa_base_footprint
       use_sim_time: false
       #robot_radius: 0.22
-      # footprint: "[[0.60,0.375],[0.60,-0.375],[-0.60,-0.375],[-0.60,0.375]]" - Measuring tape sjit
-      footprint: "[[0.60,0.355],[0.60,-0.355],[-0.60,-0.355],[-0.60,0.355]]"
+      footprint: "[[0.60,0.375],[0.60,-0.375],[-0.60,-0.375],[-0.60,0.375]]"
+      #footprint: "[[0.60,0.355],[0.60,-0.355],[-0.60,-0.355],[-0.60,0.355]]" - Too close
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -250,8 +251,8 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        #inflation_radius: 0.55
-        inflation_radius: 0.35
+        #inflation_radius: 0.55 # Kept default value
+        inflation_radius: 0.55
       always_send_full_costmap: True
 rviz:
   ros__parameters:

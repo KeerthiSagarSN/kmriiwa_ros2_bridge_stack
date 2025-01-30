@@ -6,7 +6,7 @@ from geometry_msgs.msg import PoseStamped, Pose
 from nav2_msgs.action import NavigateToPose
 from sensor_msgs.msg import JointState
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
-from kmriiwa_msgs.msg import JointPosition # Similar to the ros1 message as in stoicic;s repo
+#from kmriiwa_msgs.msg import JointPosition # Similar to the ros1 message as in stoicic;s repo
 from std_msgs.msg import String, Float32, Float32MultiArray
 import numpy as np
 from threading import Lock
@@ -215,11 +215,10 @@ def main():
     #[13.792, 2.29008, 0, 0, 1, 0], # Iniital start pose marked near keethi cell
     position_lists_to_station = [        
         [5.9446, 2.29088, 0, 0, 1, 0], # Near corridor in Bay3
-        [4.28486, 3.16318, 0, 0, -1, 0.0438], # 3D Printer station 
-        [4.3710, 1.15286, 0, 0, 1, 0.0449], # Interp points
-        [1.85, 1.7335, 0, 0, -0.71279, 0.70134], # Assembly station with UR
-        [2.0, 1.7335, 0, 0, 1, 0], # In-place rotation
-        [13.792, 2.29008, 0, 0, 1, 0] # Initial pose
+        [4.3, 3.0, 0, 0, -1, 0.0438], # 3D Printer station         
+        [1.50, 1.60, 0, 0, -0.71279, 0.70134], # Assembly station with UR 
+        [1.50, 1.60, 0, 0, 1, 0], # Assembly station with UR       
+        [13.792, 2.75, 0, 0, 1, 0] # teting only pure y-translation motino
 
     ]
     

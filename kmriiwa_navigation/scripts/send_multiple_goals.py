@@ -26,42 +26,6 @@ class NavigationClient(Node):
         self.traj_response = String()
         self.navigation_complete = False
         
-        # # Initialize joint angles
-        # self.joint_angles = [Float32() for _ in range(7)]
-        
-        # # Subscribers
-        # self.joint_state_subscriber = self.create_subscription(
-        #     JointState,
-        #     'kmriiwa/arm/joint_states',
-        #     self.joint_state_callback,
-        #     1
-        # )
-        
-        # self.response_trajectory = self.create_subscription(
-        #     String,
-        #     'kmriiwa/arm/state/JointPositionReached',
-        #     self.trajectory_action_completed,
-        #     1
-        # )
-        
-        # # Publishers
-        # self.gripper_close_publisher = self.create_publisher(
-        #     String,
-        #     'kmriiwa/base/command/gripperActionClose',
-        #     1
-        # )
-        
-        # self.gripper_open_publisher = self.create_publisher(
-        #     String,
-        #     'kmriiwa/base/command/gripperActionOpen',
-        #     1
-        # )
-        
-        # self.traj_desired_publisher = self.create_publisher(
-        #     JointPosition,
-        #     'kmriiwa/arm/command/JointPosition',
-        #     1
-        # )
 
     def send_goal(self, x, y, z):
         """Send single navigation goal"""
@@ -122,90 +86,6 @@ class NavigationClient(Node):
             self.get_logger().info(f'Navigation failed with status: {status}')
         return result
 
-    def joint_state_callback(self, joint_states):
-        """Joint states callback"""
-        for i in range(7):
-            self.joint_states_arr[i] = joint_states.position[i]
-
-    def gripper_action(self, action_type):
-        """Handle gripper actions"""
-        msg = String()
-        msg.data = ''
-        
-        if action_type == 'close':
-            self.gripper_close_publisher.publish(msg)
-        else:
-            self.gripper_open_publisher.publish(msg)
-            
-        # Sleep using ROS2 time
-        self.create_rate(0.33).sleep()  # 3 second sleep
-        return True
-
-    def pick_action(self, start_points, pick_points):
-        """Execute pick action sequence"""
-        resp = self.trajectory_action(start_points)
-        if not resp:
-            return False
-            
-        if not self.gripper_action('open'):
-            return False
-            
-        if not self.trajectory_action(pick_points):
-            return False
-            
-        if not self.gripper_action('close'):
-            return False
-            
-        if not self.trajectory_action(start_points):
-            return False
-            
-        self.get_logger().info('Pick action successful')
-        return True
-
-    def place_action(self, start_points, place_points):
-        """Execute place action sequence"""
-        if not self.trajectory_action(start_points):
-            return False
-            
-        if not self.trajectory_action(place_points):
-            return False
-            
-        if not self.gripper_action('open'):
-            return False
-            
-        if not self.trajectory_action(start_points):
-            return False
-            
-        self.get_logger().info('Place action successful')
-        return True
-
-    def trajectory_action(self, joint_position_desired):
-        """Execute trajectory action"""
-        with self.mutex1:
-            # Convert degrees to radians
-            joint_positions = [np.deg2rad(pos) for pos in joint_position_desired]
-            
-            # Create trajectory message
-            traj_msg = JointTrajectory()
-            traj_msg.joint_names = [f'kmriiwa_joint_{i+1}' for i in range(7)]
-            
-            point = JointTrajectoryPoint()
-            point.positions = joint_positions
-            point.time_from_start.sec = 1
-            traj_msg.points.append(point)
-            
-            self.traj_desired_publisher.publish(traj_msg)
-            
-        # Sleep using ROS2 time
-        self.create_rate(0.1).sleep()  # 10 second sleep
-        
-        return self.traj_response.data == "done"
-
-    def trajectory_action_completed(self, resp_traj):
-        """Trajectory completion callback"""
-        self.traj_response = resp_traj
-        if resp_traj.data == "done":
-            self.get_logger().info('Trajectory completed successfully')
 
 def main():
     rclpy.init()

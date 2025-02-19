@@ -1,3 +1,4 @@
+# https://answers.ros.org/question/397359/ - FOllow this guidelines for omni ?
 amcl:
   ros__parameters:
     use_sim_time: false
@@ -109,13 +110,13 @@ controller_server:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: -0.26 # Previously -0.26
-      min_vel_y: -0.2 # Seems to not work, even though omni
+      min_vel_y: -0.05 # Seems to not work, even though omni
       max_vel_x: 0.26 # Previously 0.26
-      max_vel_y: 0.2 # Seems to not work, even though omni
+      max_vel_y: 0.05 # Seems to not work, even though omni
       max_vel_theta: 0.8 # Previously 1.0 - Very good speed but trip in emergency
-      min_speed_xy: -0.26 # Preopvilsy 0.0, seeing if this performs good
-      max_speed_xy: 0.26
-      min_speed_theta: 0.0
+      min_speed_xy: -0.5 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
+      max_speed_xy: 0.5 # Really shit with 0.26
+      min_speed_theta: -0.8
       acc_lim_x: 2.5
       acc_lim_y: 2.5 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
       acc_lim_theta: 3.2
@@ -148,9 +149,9 @@ planner_server:
     transform_tolerance: 1.0
     tf_buffer_duration: 15.0
     use_sim_time: false
-    planner_plugins: ["GridBased"]
+    planner_plugins: ["GridBased"] # Previously "GridBased"
     GridBased:
-      plugin: "nav2_navfn_planner/NavfnPlanner"
+      plugin: "nav2_smac_planner/SmacPlannerLattice" # Previously used planner"nav2_navfn_planner/NavfnPlanner"
       tolerance: 0.5
       use_astar: false
       allow_unknown: true

@@ -76,6 +76,21 @@ ros2 bag play <bag>
 ```
 
 
+### ARUCO Marker - Manipulator positioning
+#### Realsense d435
+```
+ros2 launch realsense2_camera rs_launch.py 
+```
+#### For now run scripts
+```
+python3 aruco_detect_v2.py
+```
+#### Arm Control using KDL - Scripts
+```
+python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py 
+```
+
+
 ### gazebo simulation
 To launch the robot in gazebo simulation in empty world use:
 ```

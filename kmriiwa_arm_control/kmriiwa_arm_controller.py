@@ -120,7 +120,7 @@ class ArmManipulationClient(Node):
            
            self.traj_desired_publisher.publish(traj_msg)
            
-       self.create_rate(0.1).sleep()
+       #self.create_rate(0.5).sleep()
        return self.traj_response.data == "done"
 
    def trajectory_action_completed(self, resp_traj):
@@ -132,38 +132,51 @@ class ArmManipulationClient(Node):
        pick_place_complete = False
        
        # Define waypoints
-       start_approach_pick = [[90,-31.33,0.0,84.04,0.0,-64.64,60.00]]
-       start_robot_points = [[90.12,-43.52,0.0,90.43,0.0,-46.07,60.12]]
-       robot_points = [[90.12,-46.72,0.0,90.55,0.0,-42.74,60.12]]
-       start_approach_place = [[132.38,-22.53,0.0,95.72,-0.61,-62.21,99.03]]
-       start_table_points = [[150.77,-63.66,0,24.59,-0.37,-92.35,117.07]]
-       table_points = [[150.77,-63.69,0,28.48,-0.37,-88.43,117.12]]
+       #home_position_joints = [[90.0,-45.0,0.0,90.0,0.0,-45.0,60.0]]
+       start_approach_pick = [[84.42,-41.77,0.0,90.21,0.0,-48.04,54.44]]
+       start_pick_points_on_robot = [[84.42,-48.38,0.0,90.47,0.0,-41.14,54.44]]
+       robot_clearing_pose_points_1 = [[84.42,-30.07,0.0,36.38,0.0,-113.55,54.44]]
+       robot_clearing_pose_points_2 = [[-9.06,-1.10,0.0,73.92,0.0,-104.98,51.55]]
+       robot_clearing_pose_points_3 = [[-90.85,-1.10,0.0,73.92,0.0,-104.98,51.55]]
+       scan_aruco_pose_points = [[-90.12,-43.15,0.0,40.52,0.0,-96.34,52.27]]
 
        # Execute sequence
-       for i in range(len(start_robot_points)):
+       for i in range(1):                    
+           
            if not self.inter_points(start_approach_pick[i]):
                return False
                
-           if not self.pick_action(start_robot_points[i], robot_points[i]):
-               return False
-               
-           if not self.inter_points(start_approach_pick[i]):
-               return False
-               
-           if not self.inter_points(start_approach_place[i]):
-               return False
-               
-           if not self.place_action(start_table_points[i], table_points[i]):
-               return False
-               
-           if not self.inter_points(start_approach_place[i]):
+           if not self.pick_action(start_approach_pick[i], start_pick_points_on_robot):
                return False
                
            if not self.inter_points(start_approach_pick[i]):
                return False
                
-           self.get_logger().info('Pick and place action Successful')
-           pick_place_complete = True
+           if not self.inter_points(robot_clearing_pose_points_1[i]):
+               return False
+        
+           if not self.inter_points(robot_clearing_pose_points_2[i]):
+               return False
+
+           if not self.inter_points(robot_clearing_pose_points_3[i]):
+               return False
+
+           if not self.inter_points(scan_aruco_pose_points[i]):
+               return False
+
+        #        if not self.inter_points(robot_clearing_pose_points_1[i]):
+        #        return False
+        #    if not self.place_action(start_table_points[i], table_points[i]):
+        #        return False
+               
+        #    if not self.inter_points(start_approach_place[i]):
+        #        return False
+               
+        #    if not self.inter_points(start_approach_pick[i]):
+        #        return False
+               
+       self.get_logger().info('Pick and place action Successful')
+       pick_place_complete = True
 
        return pick_place_complete
 
@@ -174,8 +187,8 @@ def main():
    arm_client = ArmManipulationClient()
    
    try:
-       start_approach_pick = [90,-31.33,0.0,84.04,0.0,-64.64,60.00]
-       arm_client.inter_points(start_approach_pick)
+       #start_approach_pick = [90,-31.33,0.0,84.04,0.0,-64.64,60.00]
+       #arm_client.inter_points(start_approach_pick)
        
        # For pick and place sequence
        result = arm_client.start_pick_and_place()

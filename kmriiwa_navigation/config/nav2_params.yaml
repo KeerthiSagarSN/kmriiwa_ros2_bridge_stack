@@ -110,13 +110,13 @@ controller_server:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: -0.26 # Previously -0.26
-      min_vel_y: -0.05 # Seems to not work, even though omni
+      min_vel_y: -0.1 # Seems to not work, even though omni
       max_vel_x: 0.26 # Previously 0.26
-      max_vel_y: 0.05 # Seems to not work, even though omni
+      max_vel_y: 0.1 # Seems to not work, even though omni
       max_vel_theta: 0.8 # Previously 1.0 - Very good speed but trip in emergency
-      min_speed_xy: -0.5 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
-      max_speed_xy: 0.5 # Really shit with 0.26
-      min_speed_theta: -0.8
+      min_speed_xy: -0.2 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
+      max_speed_xy: 0.2 # Really shit with 0.26
+      min_speed_theta: 0.0
       acc_lim_x: 2.5
       acc_lim_y: 2.5 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
       acc_lim_theta: 3.2
@@ -149,11 +149,11 @@ planner_server:
     transform_tolerance: 1.0
     tf_buffer_duration: 15.0
     use_sim_time: false
-    planner_plugins: ["GridBased"] # Previously "GridBased"
+    planner_plugins: ["GridBased"]
     GridBased:
-      plugin: "nav2_smac_planner/SmacPlannerLattice" # Previously used planner"nav2_navfn_planner/NavfnPlanner"
+      plugin: "nav2_navfn_planner/NavfnPlanner"
       tolerance: 0.5
-      use_astar: false
+      use_astar: true
       allow_unknown: true
 
 recoveries_server:
@@ -253,7 +253,7 @@ global_costmap:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
         #inflation_radius: 0.55 # Kept default value
-        inflation_radius: 0.55
+        inflation_radius: 0.20
       always_send_full_costmap: True
 rviz:
   ros__parameters:

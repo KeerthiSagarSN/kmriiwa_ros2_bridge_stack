@@ -18,9 +18,9 @@ from geometry_msgs.msg import PoseStamped, TransformStamped
 from tf2_geometry_msgs import do_transform_pose
 import time
 from copy import deepcopy
+import time
+import asyncio
 
-from visualization_msgs.msg import MarkerArray
-from collections import defaultdict
 
 ############# Only for Testing ######################################################
 class ArmManipulationClient(Node):
@@ -44,11 +44,12 @@ class ArmManipulationClient(Node):
         self.ik_solver_vel = None
 
         self.no_of_joints = 0
+
+
+
         
         
-        ## For aruco markers
-        # Dictionary to store latest poses for each marker ID
-        self.marker_poses = defaultdict(dict)
+
         
         # Original subscribers and publishers
         self.joint_state_subscriber = self.create_subscription(
@@ -83,13 +84,9 @@ class ArmManipulationClient(Node):
             1
         )
         
-
-        self.aruco_markers_subscriber = self.create_subscription(MarkerArray,'/coresense/assembly_station/aruco_markers',self.aruco_marker_callback,1)
         # Setup KDL
         self.setup_kdl()
-        # TF2 buffer for transforms
-        # self.tf_buffer = tf2_ros.Buffer()
-        # self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
+
 
     def setup_kdl(self):
         """Setup KDL chain from URDF."""
@@ -146,42 +143,6 @@ class ArmManipulationClient(Node):
             
         except Exception as e:
             self.get_logger().error(f'Failed to setup KDL: {str(e)}')
-
-
-    def aruco_marker_callback(self, msg):
-        # Clear old poses
-        self.marker_poses.clear()
-        
-        for marker in msg.markers:
-            marker_id = marker.id
-            pos = marker.pose.position
-            ori = marker.pose.orientation
-            
-            # Store pose for this ID
-            self.marker_poses[marker_id] = {
-                'position': {
-                    'x': pos.x,
-                    'y': pos.y,
-                    'z': pos.z
-                },
-                'orientation': {
-                    'x': ori.x,
-                    'y': ori.y,
-                    'z': ori.z,
-                    'w': ori.w
-                }
-            }
-            
-            # Log pose for this ID
-            self.get_logger().info(
-                f'\nMarker ID {marker_id}:\n'
-                f'Position: x={pos.x:.3f}, y={pos.y:.3f}, z={pos.z:.3f}\n'
-                f'Orientation: x={ori.x:.3f}, y={ori.y:.3f}, z={ori.z:.3f}, w={ori.w:.3f}'
-            )
-    
-    def get_marker_pose(self, marker_id):
-        """Get the latest pose for a specific marker ID"""
-        return self.marker_poses.get(marker_id, None)
 
     def joint_state_callback(self, joint_states):
         """Store current joint states and update KDL FK."""
@@ -312,7 +273,7 @@ class ArmManipulationClient(Node):
         return transform
 
     # Your existing methods remain unchanged
-    def gripper_action(self, action_type):
+    def gripper_action(self, action_type,time_to_sleep):
         msg = String()
         msg.data = ''
         
@@ -321,8 +282,27 @@ class ArmManipulationClient(Node):
         else:
             self.gripper_open_publisher.publish(msg)
             
-        self.create_rate(0.5).sleep()
+        time.sleep(time_to_sleep)
         return True
+    def move_to_joint_pose(self,desired_joints):
+        
+        #try:
+        joint_positions = [desired_joints[i] for i in range(self.kdl_chain.getNrOfJoints())]
+        print('New joint postions are',joint_positions)
+        print('Joint psotions in degrees are',rad2deg(joint_positions).tolist())
+        print('I hvve crossed this')
+        traj_resp = self.trajectory_action(joint_positions)
+        #if traj_resp.data == "done":
+        if traj_resp:
+            return True
+        else:
+            return False
+
+
+        # except:
+        #     self.get_logger().error('Failed to execute joint motion ')
+        #     return False
+
 
     def trajectory_action(self, joint_position_desired):
         with self.mutex1:
@@ -337,9 +317,12 @@ class ArmManipulationClient(Node):
             traj_msg.kmriiwa_joint_7 = joint_positions[6]
             
             self.traj_desired_publisher.publish(traj_msg)
-                
-            self.create_rate(0.1).sleep()
-            return self.traj_response.data == "done"
+            
+            
+            #self.create_rate(0.1).sleep()
+            time.sleep(1.0)
+            #return self.traj_response.data == "done"
+            return True
 
     def trajectory_action_completed(self, resp_traj):
         self.traj_response = resp_traj
@@ -347,6 +330,80 @@ class ArmManipulationClient(Node):
             self.get_logger().info('Trajectory completed successfully')
 
     # Example of how to use Cartesian control with your pick and place
+
+    def joint_pick_and_place(self):
+        # Example poses - adjust these for your setup
+        #with mutex4:
+        start_approach_pick = deg2rad([84.42,-41.77,0.0,90.21,0.0,-48.04,54.44]).tolist()
+        start_pick_points_on_robot = deg2rad([84.42,-48.38,0.0,90.47,0.0,-41.14,54.44]).tolist()
+        robot_clearing_pose_points_1 = deg2rad([84.42,-25.44,0.0,57.30,0.0,-97.26,54.44]).tolist()
+        robot_clearing_pose_points_2 = deg2rad([-9.06,-1.10,0.0,73.92,0.0,-104.98,51.55]).tolist()
+        robot_clearing_pose_points_3 = deg2rad([-90.85,-1.10,0.0,73.92,0.0,-104.98,51.55]).tolist()
+        scan_aruco_pose_points = deg2rad([-90.12,-43.15,0.0,40.52,0.0,-96.34,52.27]).tolist()
+        
+        print('start_approach_pick is',start_approach_pick)
+        # Execute pick sequence
+
+        res1 = self.move_to_joint_pose(start_approach_pick)
+        time.sleep(3.0)
+        print('res1 is',res1)
+        print('res1-success')
+        time.sleep(3.0)
+
+        if res1:
+            print('inside next move')
+            start_pick = self.move_to_joint_pose(start_pick_points_on_robot)
+            
+            time.sleep(3.0)
+
+            if start_pick:
+                res2 = self.gripper_action('close',2.0)
+
+                if res2:
+                    res3 = self.move_to_joint_pose(robot_clearing_pose_points_1)
+                    time.sleep(3.0)
+                    
+                    if res3:
+                        res4 = self.move_to_joint_pose(robot_clearing_pose_points_2)
+                        time.sleep(3.0)
+                        
+                        if res4:
+                            res5 = self.move_to_joint_pose(robot_clearing_pose_points_3)
+                            time.sleep(3.0)
+                            
+                            if res5:
+                                res6 = self.move_to_joint_pose(scan_aruco_pose_points)
+                                time.sleep(3.0)
+                                
+                                if res6:
+                                    
+                                    res7 = self.move_to_joint_pose(start_approach_pick)
+                                    time.sleep(3.0)
+                                    print('res1 is',res7)
+                                    print('res1-success')
+                                    time.sleep(3.0)
+
+                                    if res7:
+                                        print('inside next move')
+                                        
+                                        
+                                        res8 = self.move_to_joint_pose(start_pick_points_on_robot)
+                                        time.sleep(12.0)
+                                        
+                                        #time.sleep(10.0)
+
+                                        if res8:                                     
+                                            return True
+                                        else:
+                                            return False
+
+
+        else:
+            print('everythin went to shit')
+            return False
+
+
+
     def cartesian_pick_and_place(self):
         # Example poses - adjust these for your setup
         pick_approach = PoseStamped()
@@ -454,61 +511,19 @@ def main():
             arm_client.get_logger().error("Could not get current TCP pose")
             return
             
-        arm_client.get_logger().info(f"Current TCP position: x={current_pose.pose.position.x:.3f}, "
-                                    f"y={current_pose.pose.position.y:.3f}, "
-                                    f"z={current_pose.pose.position.z:.3f}")
+        # arm_client.get_logger().info(f"Current TCP position: x={current_pose.pose.position.x:.3f}, "
+        #                             f"y={current_pose.pose.position.y:.3f}, "
+        #                             f"z={current_pose.pose.position.z:.3f}")
         
-        # Create offset target (move 10cm up in Z)
-        target_pose = deepcopy(current_pose)
 
-        ## First get the marker pose - example of id1 onw
-        #pose_aruco = Pose()
-        pose_aruco_position_1 = arm_client.get_marker_pose(1)['position']
-        x_pos_aruco_1 = pose_aruco_position_1['x']
-        y_pos_aruco_1 = pose_aruco_position_1['y']
-        z_pos_aruco_1 = pose_aruco_position_1['z']
-        print('pose_aruco',pose_aruco_position_1['x'])
+        # Pick from table
+        result =arm_client.joint_pick_and_place()
+        arm_client.get_logger().info('Tried doing pick and place with ojoint positions')
 
-
-        pose_aruco_position_2 = arm_client.get_marker_pose(10)['position']
-        x_pos_aruco_2 = pose_aruco_position_2['x']
-        y_pos_aruco_2 = pose_aruco_position_2['y']
-        z_pos_aruco_2 = pose_aruco_position_2['z']
-        print('pose_aruco',pose_aruco_position_2['x'])
-
-        ## KUTTI VECTOR ALGEBRA
-
-        ## C - camera, A1 - aruco 1, A2- aruco2 
-        ## CA2 - CA1 -> CA
-        ## CA/2 - > CAvg
-        ## Midpoint -> CA_mp = CA1 + CAvg
-        CAvg_x = (x_pos_aruco_2 - x_pos_aruco_1)/2.0
-        CAvg_y = (y_pos_aruco_2 - y_pos_aruco_1)/2.0
-        CAvg_z = (z_pos_aruco_2 - z_pos_aruco_1)/2.0
-                
-        x_pos_mp_aruco = x_pos_aruco_1 + CAvg_x
-        y_pos_mp_aruco = y_pos_aruco_1 + CAvg_y
-        z_pos_mp_aruco = z_pos_aruco_1 + CAvg_z
-
-        x_static_transform_ee_to_cam = -0.030
-        y_static_transform_ee_to_cam = -0.085
-        target_pose.pose.position.x = (target_pose.pose.position.x - (x_static_transform_ee_to_cam + x_pos_mp_aruco) ) # Testing with ARUCO package
-        target_pose.pose.position.y = (target_pose.pose.position.y + (y_static_transform_ee_to_cam + y_pos_mp_aruco) ) # Testing with ARUCO package
-        target_pose.pose.position.z -= 0.078 # Static offset for testing
+        if result:
+            print(' Now i am opening gripper')
+            arm_client.gripper_action('open',3.0)
         
-        arm_client.get_logger().info(f"Moving to: x={target_pose.pose.position.x:.3f}, "
-                                    f"y={target_pose.pose.position.y:.3f}, "
-                                    f"z={target_pose.pose.position.z:.3f}")
-        
-        
-        # Execute move
-        result = arm_client.move_to_cartesian_pose(target_pose.pose)
-        arm_client.get_logger().info(f"Move completed: {result}")
-        
-        # Move back to original position
-        arm_client.get_logger().info("Moving back to original position...")
-        result = arm_client.move_to_cartesian_pose(current_pose.pose)
-        arm_client.get_logger().info(f"Return move completed: {result}")
         
         rclpy.spin(arm_client)
         

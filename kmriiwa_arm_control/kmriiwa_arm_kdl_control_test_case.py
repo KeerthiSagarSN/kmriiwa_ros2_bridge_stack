@@ -42,6 +42,9 @@ class ArmManipulationClient(Node):
         self.ik_solver_vel = None
 
         self.no_of_joints = 0
+
+
+
         
         
 
@@ -281,6 +284,18 @@ class ArmManipulationClient(Node):
             
         self.create_rate(0.5).sleep()
         return True
+    def move_to_joint_pose(self,desired_joints):
+        
+        try:
+            joint_positions = [desired_joints[i] for i in range(self.kdl_chain.getNrOfJoints())]
+            print('New joint postions are',joint_positions)
+            print('Joint psotions in degrees are',rad2deg(joint_positions).tolist())
+            return self.trajectory_action(joint_positions)
+
+        except:
+            self.get_logger().error('IK solution not found')
+            return False
+
 
     def trajectory_action(self, joint_position_desired):
         with self.mutex1:
@@ -305,6 +320,37 @@ class ArmManipulationClient(Node):
             self.get_logger().info('Trajectory completed successfully')
 
     # Example of how to use Cartesian control with your pick and place
+
+    def joint_pick_and_place(self):
+        # Example poses - adjust these for your setup
+        start_approach_pick = deg2rad([[84.42,-41.77,0.0,90.21,0.0,-48.04,54.44]]).tolist()
+        start_pick_points_on_robot = deg2rad([[84.42,-48.38,0.0,90.47,0.0,-41.14,54.44]]).tolist()
+        robot_clearing_pose_points_1 = deg2rad([[84.42,-30.07,0.0,36.38,0.0,-113.55,54.44]]).tolist()
+        robot_clearing_pose_points_2 = deg2rad([[-9.06,-1.10,0.0,73.92,0.0,-104.98,51.55]]).tolist()
+        robot_clearing_pose_points_3 = deg2rad([[-90.85,-1.10,0.0,73.92,0.0,-104.98,51.55]]).tolist()
+        scan_aruco_pose_points = deg2rad([[-90.12,-43.15,0.0,40.52,0.0,-96.34,52.27]]).tolist()
+
+        # Execute pick sequence
+        if not self.move_to_joint_pose(start_approach_pick):
+            return False
+        if not self.move_to_joint_pose(start_pick_points_on_robot):
+            return False
+            
+        if not self.gripper_action('open'):
+            return False
+        
+        if not self.move_to_joint_pose(robot_clearing_pose_points_1):
+            return False
+        if not self.move_to_joint_pose(robot_clearing_pose_points_2):
+            return False
+        if not self.move_to_joint_pose(robot_clearing_pose_points_3):
+            return False
+        if not self.move_to_joint_pose(scan_aruco_pose_points):
+            return False
+
+        self.get_logger().info('Cartesian pick successful')
+        return True
+
     def cartesian_pick_and_place(self):
         # Example poses - adjust these for your setup
         pick_approach = PoseStamped()

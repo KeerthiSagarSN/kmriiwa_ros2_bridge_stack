@@ -89,6 +89,10 @@ python3 aruco_detect_v2.py
 ```
 python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py 
 ```
+#### Remap velocity
+```
+ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
+```
 
 
 ### gazebo simulation

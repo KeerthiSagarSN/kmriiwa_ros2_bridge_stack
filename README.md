@@ -89,14 +89,18 @@ python3 aruco_detect_v2.py
 ```
 python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py 
 ```
-#### Remap velocity
-```
-ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
-```
 
 
+### gazebo launch
+```
+ros2 launch kmriiwa_simulation gazebo_coresense.launch.py
+```
 ### gazebo simulation
 To launch the robot in gazebo simulation in empty world use:
 ```
 roslaunch kmriiwa_gazebo kmriiwa_empty_world.launch
+```
+#### Remap velocity
+```
+ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
 ```

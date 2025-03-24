@@ -89,7 +89,10 @@ python3 aruco_detect_v2.py
 ```
 python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py 
 ```
-
+### Ensure map-server is installed
+```
+sudo apt-get install ros-$ROS2-DISTRO$-nav2-map-server
+```
 
 ### gazebo launch
 ```

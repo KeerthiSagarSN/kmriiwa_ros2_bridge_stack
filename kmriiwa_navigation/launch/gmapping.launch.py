@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
@@ -9,6 +9,7 @@ import os
 def generate_launch_description():
     # Get package directories
     pkg_dir = get_package_share_directory('kmriiwa_navigation')
+    slam_config_dir = get_package_share_directory('slam_toolbox')
     
     # Declare arguments
     scan_topic_arg = DeclareLaunchArgument(
@@ -16,7 +17,6 @@ def generate_launch_description():
         default_value='scan_multi',
         description='Topic name for the merged laser scan'
     )
-    
     robot_name_arg = DeclareLaunchArgument(
         'robot_name',
         default_value='kmriiwa',
@@ -33,7 +33,7 @@ def generate_launch_description():
         }.items()
     )
     
-    # Configure SLAM node
+    # Configure SLAM node for Nav2
     slam_node = Node(
         package='slam_toolbox',
         executable='sync_slam_toolbox_node',
@@ -56,9 +56,26 @@ def generate_launch_description():
             'scan_buffer_size': 10,
             'loop_search_maximum_distance': 3.0,
             'do_loop_closing': True,
+            # Nav2-specific parameters
+            'publish_map_odom_transform': True,
+            'map_start_at_dock': True,
+            'nav2_init': True
         }],
         remappings=[
             ('scan', LaunchConfiguration('scan_topic'))
+        ]
+    )
+    
+    # Add lifecycle manager for Nav2 compatibility
+    lifecycle_manager = Node(
+        package='nav2_lifecycle_manager',
+        executable='lifecycle_manager',
+        name='lifecycle_manager_slam',
+        output='screen',
+        parameters=[
+            {'use_sim_time': False},
+            {'autostart': True},
+            {'node_names': ['slam_toolbox']}
         ]
     )
     
@@ -66,5 +83,6 @@ def generate_launch_description():
         scan_topic_arg,
         robot_name_arg,
         laserscan_merge,
-        slam_node
+        slam_node,
+        lifecycle_manager
     ])

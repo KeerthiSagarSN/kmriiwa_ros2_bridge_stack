@@ -83,7 +83,7 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: false
-    controller_frequency: 10.0
+    controller_frequency: 20.0 # Previously was 10.0
     min_x_velocity_threshold: 0.001
     min_y_velocity_threshold: 0.001
     min_theta_velocity_threshold: 0.001
@@ -107,7 +107,8 @@ controller_server:
 
     # DWB parameters
     FollowPath:
-      plugin: "dwb_core::DWBLocalPlanner"
+      plugin: "nav2_mppi_controller::MPPIController"
+      model_dt: 0.05 # Delete this when not using mppi
       debug_trajectory_details: True
       min_vel_x: -0.26 # Previously -0.26
       min_vel_y: -0.1 # Seems to not work, even though omni
@@ -134,7 +135,7 @@ controller_server:
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
-      critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+      critics: ["ConstraintCritic", "CostCritic", "GoalAngleCritic", "GoalCritic", "ObstaclesCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"] # Removed "RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"
       # BaseObstacle.scale: 0.02 - very close to obstacle
       BaseObstacle.scale: 0.05
       PathAlign.scale: 32.0

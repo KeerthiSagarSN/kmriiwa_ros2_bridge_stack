@@ -6,6 +6,7 @@ from launch.actions import (DeclareLaunchArgument, IncludeLaunchDescription)
 from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 def generate_launch_description():
     # Package directories
@@ -56,6 +57,20 @@ def generate_launch_description():
         description='Local path planner to use'
     )
 
+    # Added launch argument for velocity command topic
+    declare_cmd_vel_topic = DeclareLaunchArgument(
+        'cmd_vel_topic',
+        default_value='/kmriiwa/cmd_vel',
+        description='Topic name for velocity commands'
+    )
+
+    # Added launch argument for joint damping (to prevent arm from falling)
+    declare_joint_damping = DeclareLaunchArgument(
+        'joint_damping',
+        default_value='20.0',
+        description='Damping value for robot joints to prevent gravity collapse'
+    )
+
     # Navigation Launch (Conditional based on static map)
     map_navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -67,7 +82,8 @@ def generate_launch_description():
             'base_local_planner': LaunchConfiguration('base_local_planner'),
             'map_file': LaunchConfiguration('map_file'),
             'use_namespace': LaunchConfiguration('use_namespace'),
-            'robot_name': LaunchConfiguration('robot_name')
+            'robot_name': LaunchConfiguration('robot_name'),
+            'cmd_vel_topic': LaunchConfiguration('cmd_vel_topic')  # Added cmd_vel topic
         }.items()
     )
 
@@ -80,7 +96,8 @@ def generate_launch_description():
             'base_global_planner': LaunchConfiguration('base_global_planner'),
             'base_local_planner': LaunchConfiguration('base_local_planner'),
             'use_namespace': LaunchConfiguration('use_namespace'),
-            'robot_name': LaunchConfiguration('robot_name')
+            'robot_name': LaunchConfiguration('robot_name'),
+            'cmd_vel_topic': LaunchConfiguration('cmd_vel_topic')  # Added cmd_vel topic
         }.items()
     )
 
@@ -93,7 +110,8 @@ def generate_launch_description():
             'pipeline': 'ompl',
             'use_namespace': LaunchConfiguration('use_namespace'),
             'robot_name': LaunchConfiguration('robot_name'),
-            'no_virtual_joint': LaunchConfiguration('no_static_map')
+            'no_virtual_joint': LaunchConfiguration('no_static_map'),
+            'joint_damping': LaunchConfiguration('joint_damping')  # Added joint damping
         }.items()
     )
 
@@ -108,6 +126,29 @@ def generate_launch_description():
         }.items()
     )
 
+    # Add joint state publisher with damping (for when controllers are not loaded)
+    joint_state_publisher_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        name='joint_state_publisher',
+        parameters=[{
+            'use_sim_time': True,
+            # Add damping parameters to prevent arm from falling
+            'damping': {
+                'kmriiwa_joint_1': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_2': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_3': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_4': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_5': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_6': LaunchConfiguration('joint_damping'),
+                'kmriiwa_joint_7': LaunchConfiguration('joint_damping')
+            }
+        }],
+        # Publish to the correct namespace
+        remappings=[('joint_states', '/kmriiwa/joint_states')],
+        output='screen'
+    )
+
     # Create launch description
     ld = LaunchDescription()
 
@@ -119,8 +160,11 @@ def generate_launch_description():
     ld.add_action(declare_map_file)
     ld.add_action(declare_base_global_planner)
     ld.add_action(declare_base_local_planner)
+    ld.add_action(declare_cmd_vel_topic)  # Added cmd_vel topic argument
+    ld.add_action(declare_joint_damping)  # Added joint damping argument
 
     # Add launches
+    ld.add_action(joint_state_publisher_node)  # Added joint state publisher with damping
     ld.add_action(map_navigation_launch)
     ld.add_action(mapless_navigation_launch)
     ld.add_action(moveit_launch)

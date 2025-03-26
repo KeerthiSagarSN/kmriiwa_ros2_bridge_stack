@@ -76,8 +76,34 @@ ros2 bag play <bag>
 ```
 
 
+### ARUCO Marker - Manipulator positioning
+#### Realsense d435
+```
+ros2 launch realsense2_camera rs_launch.py 
+```
+#### For now run scripts
+```
+python3 aruco_detect_v2.py
+```
+#### Arm Control using KDL - Scripts
+```
+python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py 
+```
+### Ensure map-server is installed
+```
+sudo apt-get install ros-$ROS2-DISTRO$-nav2-map-server
+```
+
+### gazebo launch
+```
+ros2 launch kmriiwa_simulation gazebo_coresense.launch.py
+```
 ### gazebo simulation
 To launch the robot in gazebo simulation in empty world use:
 ```
 roslaunch kmriiwa_gazebo kmriiwa_empty_world.launch
+```
+#### Remap velocity
+```
+ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
 ```

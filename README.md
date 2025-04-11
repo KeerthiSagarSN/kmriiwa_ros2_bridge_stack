@@ -94,16 +94,31 @@ python3 kmriiwa_arm_kdl_control_test_case_with_aruco.py
 sudo apt-get install ros-$ROS2-DISTRO$-nav2-map-server
 ```
 
-### gazebo launch
+### For gazebo simulation launch the following:
+#### 1. Launch Gazebo
 ```
 ros2 launch kmriiwa_simulation gazebo_coresense.launch.py
 ```
-### gazebo simulation
-To launch the robot in gazebo simulation in empty world use:
+#### 2. Launch the Navigation with Nav2
+This is simlar to the actual navigation with the real-robot
 ```
-roslaunch kmriiwa_gazebo kmriiwa_empty_world.launch
+ros2 launch kmriiwa_navigation kmr_robot_navigation.launch.py
 ```
-#### Remap velocity
+
+#### 3. Merge laser data for localization and mapping
+```
+ros2 launch kmriiwa_navigation laserscan_merge.launch.py
+```
+##### Important please set the initial pose of the robot for AMCL
+##### Note: Map is not perfect there are deviations in the current map, but the nav2 would work
+![Initialize pose](Images/initialize_pose_for_amcl.png)
+
+#### 4. Remap velocity as gazebo takes cmd_vel as input
 ```
 ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
+```
+#### 5. Point to point navigation from different stations
+```
+cd kmriiwa_ros_stack/kmriiwa_navigation/scripts/
+python3 send_multiple_goals_gazebo.py
 ```

@@ -9,7 +9,7 @@ from threading import Lock
 import PyKDL
 #from kdl_parser_py.kdl_parser_py import kdl_tree_from_urdf_model
 from urdf_parser_py.urdf import URDF
-from numpy import deg2rad,rad2deg
+from numpy import deg2rad,rad2deg,array,sign
 
 # from kdl_parser_py import KDL
 from kdl_parser_py import urdf
@@ -18,10 +18,13 @@ from geometry_msgs.msg import PoseStamped, TransformStamped
 from tf2_geometry_msgs import do_transform_pose
 import time
 from copy import deepcopy
+import math
 
 from visualization_msgs.msg import MarkerArray
 from collections import defaultdict
-
+from scipy.spatial.transform import Rotation
+import threading
+from rclpy.duration import Duration
 ############# Only for Testing ######################################################
 class ArmManipulationClient(Node):
     def __init__(self):
@@ -32,9 +35,13 @@ class ArmManipulationClient(Node):
         self.joint_states_arr = np.zeros(7) ## Numpy array for calaculation throurhgt
         #self.joints_states_arr = np.array([1.50,-0.707,0.0,1.570,0,-0.707,0])
         #self.joint_states_arr = None
+
+        ## All threading shit here
         self.mutex1 = Lock()
         self.mutex2 = Lock()
         self.traj_response = String()
+        self.trajectory_completed_event = threading.Event()
+        self.trajectory_result = False
         
         # KDL related members
         self.robot_urdf = None
@@ -146,7 +153,67 @@ class ArmManipulationClient(Node):
             
         except Exception as e:
             self.get_logger().error(f'Failed to setup KDL: {str(e)}')
-
+    
+    
+    def quaternion_to_euler(self,quaternion):
+        """
+        Convert quaternion to Euler angles (roll, pitch, yaw).
+        
+        Args:
+            quaternion: Quaternion as [x, y, z, w]
+            
+        Returns:
+            Euler angles as (roll, pitch, yaw) in radians
+        """
+        x, y, z, w = quaternion
+        
+        # Roll (rotation around x-axis)
+        sinr_cosp = 2 * (w * x + y * z)
+        cosr_cosp = 1 - 2 * (x * x + y * y)
+        roll = math.atan2(sinr_cosp, cosr_cosp)
+        
+        # Pitch (rotation around y-axis)
+        sinp = 2 * (w * y - z * x)
+        if abs(sinp) >= 1:
+            # Use 90 degrees if out of range
+            pitch = math.copysign(math.pi / 2, sinp)
+        else:
+            pitch = math.asin(sinp)
+        
+        # Yaw (rotation around z-axis)
+        siny_cosp = 2 * (w * z + x * y)
+        cosy_cosp = 1 - 2 * (y * y + z * z)
+        yaw = math.atan2(siny_cosp, cosy_cosp)
+        
+        return (roll, pitch, yaw)
+    
+    def euler_to_quaternion(self,roll, pitch, yaw):
+        """
+        Convert Euler angles to quaternion.
+        
+        Args:
+            roll: Rotation around x-axis in radians
+            pitch: Rotation around y-axis in radians
+            yaw: Rotation around z-axis in radians
+            
+        Returns:
+            Quaternion as [x, y, z, w]
+        """
+        # Abbreviations for the various angular functions
+        cy = np.cos(yaw * 0.5)
+        sy = np.sin(yaw * 0.5)
+        cp = np.cos(pitch * 0.5)
+        sp = np.sin(pitch * 0.5)
+        cr = np.cos(roll * 0.5)
+        sr = np.sin(roll * 0.5)
+        
+        # Quaternion
+        x = sr * cp * cy - cr * sp * sy
+        y = cr * sp * cy + sr * cp * sy
+        z = cr * cp * sy - sr * sp * cy
+        w = cr * cp * cy + sr * sp * sy
+        
+        return np.array([x, y, z, w])
 
     def aruco_marker_callback(self, msg):
         # Clear old poses
@@ -173,11 +240,11 @@ class ArmManipulationClient(Node):
             }
             
             # Log pose for this ID
-            self.get_logger().info(
-                f'\nMarker ID {marker_id}:\n'
-                f'Position: x={pos.x:.3f}, y={pos.y:.3f}, z={pos.z:.3f}\n'
-                f'Orientation: x={ori.x:.3f}, y={ori.y:.3f}, z={ori.z:.3f}, w={ori.w:.3f}'
-            )
+            # self.get_logger().info(
+            #     f'\nMarker ID {marker_id}:\n'
+            #     f'Position: x={pos.x:.3f}, y={pos.y:.3f}, z={pos.z:.3f}\n'
+            #     f'Orientation: x={ori.x:.3f}, y={ori.y:.3f}, z={ori.z:.3f}, w={ori.w:.3f}'
+            # )
     
     def get_marker_pose(self, marker_id):
         """Get the latest pose for a specific marker ID"""
@@ -219,7 +286,7 @@ class ArmManipulationClient(Node):
             
             #if len(current_joints) > 0:
             print('Current joints after are',current_joints)
-            input('stop ')
+            #input('stop ')
             # Solve IK
             result_joints = PyKDL.JntArray(self.no_of_joints)
             if self.ik_solver.CartToJnt(current_joints, target_frame, result_joints) >= 0:
@@ -231,7 +298,32 @@ class ArmManipulationClient(Node):
         except Exception as e:
             self.get_logger().error(f'Failed to convert to joint positions: {str(e)}')
             return None
-
+    def move_only_seventh_axis(self,joint_angle_offset,frame_id="kmriiwa_link_0"):
+        #print('Doing thinhgs')
+        # Get current joint positions as the other code
+        new_joints = PyKDL.JntArray(self.kdl_chain.getNrOfJoints())
+        for i in range(self.kdl_chain.getNrOfJoints()):
+            new_joints[i] = self.joint_states_arr[i]
+        #new_joints = deepcopy(current_joints)
+        print('Current joints are',new_joints)
+        new_joints[6] = joint_angle_offset
+        print('New joints are',new_joints)
+        try:
+            #input('stop and do this')
+            traj_response = self.trajectory_action(new_joints)
+            print('Traje_response is',traj_response)
+            return self.trajectory_action(new_joints)
+            #input('diong this')
+            '''
+            else:
+                self.get_logger().error('IK solution not found')
+                return False
+            '''
+                
+        except Exception as e:
+            self.get_logger().error(f'Failed to execute joint motion: {str(e)}')
+            return False
+        
     def move_to_cartesian_pose(self, target_pose, frame_id="kmriiwa_link_0"):
         """Move the arm to a target Cartesian pose using PyKDL."""
         try:
@@ -295,6 +387,60 @@ class ArmManipulationClient(Node):
             self.get_logger().error(f'Failed to execute cartesian motion: {str(e)}')
             return False
 
+    def apply_euler_offsets(self,quaternion, roll_offset, pitch_offset, yaw_offset):
+        """
+        Apply roll, pitch, and yaw offsets to an existing quaternion.
+        
+        Args:
+            quaternion: Existing quaternion as [x, y, z, w]
+            roll_offset: Additional rotation around x-axis in radians
+            pitch_offset: Additional rotation around y-axis in radians
+            yaw_offset: Additional rotation around z-axis in radians
+            
+        Returns:
+            New quaternion with offsets applied, as [x, y, z, w]
+        """
+        # Create rotation object from quaternion
+        r = Rotation.from_quat([quaternion[0], quaternion[1], quaternion[2], quaternion[3]])
+        
+        # Convert to Euler angles (in the order of 'xyz')
+        euler = r.as_euler('xyz')
+        
+        # Add offsets
+        euler[0] += roll_offset
+        euler[1] += pitch_offset
+        euler[2] += yaw_offset
+        
+        # Convert back to quaternion
+        r_new = Rotation.from_euler('xyz', euler)
+        quat_new = r_new.as_quat()
+        
+        return quat_new
+    def get_aruco_orientation(self,vector1,vector2):
+       
+        """
+        Calculate the signed angle between two 2D vectors.
+        Positive angle means counterclockwise rotation from vector1 to vector2.
+        Crap method for now, because 7-DOF of KUKA IIWA, I am just going to orient the 7th axis,
+        since the realsense is mounted above the 7th axis, and can rotate independently
+        for other robots, go do some more work do not use this shit primitive methids TODO
+        
+        Args:
+            vector1: First 2D vector [x1, y1]
+            vector2: Second 2D vector [x2, y2]
+            
+        Returns:
+            angle in radians
+        """
+        x1, y1 = vector1
+        x2, y2 = vector2
+        
+        # Using the formula from cross and dot products
+        angle_rad = math.atan2(x1*y2 - y1*x2, x1*x2 + y1*y2)
+        return angle_rad
+
+
+    
     def get_frame_transform(self, from_frame, to_frame):
         """Get transform between two frames using PyKDL."""
         # This is a simplified example - you would need to implement the actual
@@ -323,7 +469,7 @@ class ArmManipulationClient(Node):
             
         self.create_rate(0.5).sleep()
         return True
-
+    '''
     def trajectory_action(self, joint_position_desired):
         with self.mutex1:
             joint_positions = [pos for pos in joint_position_desired]
@@ -339,8 +485,60 @@ class ArmManipulationClient(Node):
             self.traj_desired_publisher.publish(traj_msg)
                 
             self.create_rate(0.1).sleep()
-            return self.traj_response.data == "done"
+            
+            try:
+                return self.traj_response.data == "done"
+            except Exception as e:
+                self.get_logger().error(f'Failed to send response for trajectory: {str(e)}')
+                return False
+            pass
+    '''
 
+    def trajectory_action(self, joint_position_desired):
+        with self.mutex1:
+            # Create and send the message
+            joint_positions = [pos for pos in joint_position_desired]
+            traj_msg = JointPosition()
+            traj_msg.kmriiwa_joint_1 = joint_positions[0]
+            traj_msg.kmriiwa_joint_2 = joint_positions[1]
+            traj_msg.kmriiwa_joint_3 = joint_positions[2]
+            traj_msg.kmriiwa_joint_4 = joint_positions[3]
+            traj_msg.kmriiwa_joint_5 = joint_positions[4]
+            traj_msg.kmriiwa_joint_6 = joint_positions[5]
+            traj_msg.kmriiwa_joint_7 = joint_positions[6]
+            
+            self.traj_desired_publisher.publish(traj_msg)
+        
+        # Check if joint states reached, so that dont ave to wait forever to finish
+        tolerance = 0.001  # radians
+        
+        # Create a timeout mechanism
+        start_time = self.get_clock().now()
+        timeout_duration = Duration(seconds=30)  # 10-second timeout
+        
+        # Loop until joints are at desired position or timeout
+        while rclpy.ok():
+            # Check if we've reached timeout
+            if self.get_clock().now() - start_time > timeout_duration:
+                self.get_logger().error('Trajectory action timed out')
+                return False
+            
+            # Get current joint positions
+            current_joints = self.joint_states_arr
+            
+            # Check if all joints are within tolerance of desired position
+            all_joints_reached = True
+            for i in range(len(joint_positions)):
+                if abs(current_joints[i] - joint_positions[i]) > tolerance:
+                    all_joints_reached = False
+                    break
+            
+            if all_joints_reached:
+                self.get_logger().info('All joints reached desired positions')
+                return True
+            
+            # Spin once to process callbacks and update joint_states_arr
+            rclpy.spin_once(self, timeout_sec=0.1)
     def trajectory_action_completed(self, resp_traj):
         self.traj_response = resp_traj
         if resp_traj.data == "done":
@@ -384,7 +582,7 @@ class ArmManipulationClient(Node):
 
     def get_current_tcp_pose(self):
         """Get current TCP pose using forward kinematics."""
-        input('I am')
+        #input('I am')
 
         if not np.any(self.joint_states_arr):
             print("Array contains all zeros")
@@ -458,8 +656,11 @@ def main():
                                     f"y={current_pose.pose.position.y:.3f}, "
                                     f"z={current_pose.pose.position.z:.3f}")
         
+        
         # Create offset target (move 10cm up in Z)
         target_pose = deepcopy(current_pose)
+        
+
 
         ## First get the marker pose - example of id1 onw
         #pose_aruco = Pose()
@@ -467,15 +668,30 @@ def main():
         x_pos_aruco_1 = pose_aruco_position_1['x']
         y_pos_aruco_1 = pose_aruco_position_1['y']
         z_pos_aruco_1 = pose_aruco_position_1['z']
-        print('pose_aruco',pose_aruco_position_1['x'])
 
+        pose_aruco_ori_1 = arm_client.get_marker_pose(1)['orientation']
+        x_aruco_ori_1 = pose_aruco_ori_1['x']
+        y_aruco_ori_1 = pose_aruco_ori_1['y']
+        z_aruco_ori_1 = pose_aruco_ori_1['z']
+        w_aruco_ori_1 = pose_aruco_ori_1['w']
+        
+        aruco_quat_1 = array([x_aruco_ori_1,y_aruco_ori_1,z_aruco_ori_1,w_aruco_ori_1])
+        print('aruco_quaternion_1 is',aruco_quat_1)
 
         pose_aruco_position_2 = arm_client.get_marker_pose(10)['position']
         x_pos_aruco_2 = pose_aruco_position_2['x']
         y_pos_aruco_2 = pose_aruco_position_2['y']
         z_pos_aruco_2 = pose_aruco_position_2['z']
-        print('pose_aruco',pose_aruco_position_2['x'])
 
+        pose_aruco_ori_2 = arm_client.get_marker_pose(10)['orientation']
+        x_aruco_ori_2 = pose_aruco_ori_2['x']
+        y_aruco_ori_2 = pose_aruco_ori_2['y']
+        z_aruco_ori_2 = pose_aruco_ori_2['z']
+        w_aruco_ori_2 = pose_aruco_ori_2['w']
+        aruco_quat_2 = array([x_aruco_ori_2,y_aruco_ori_2,z_aruco_ori_2,w_aruco_ori_2])
+        
+        print('aruco_quaternion_2 is',aruco_quat_2)
+        
         ## KUTTI VECTOR ALGEBRA
 
         ## C - camera, A1 - aruco 1, A2- aruco2 
@@ -490,25 +706,73 @@ def main():
         y_pos_mp_aruco = y_pos_aruco_1 + CAvg_y
         z_pos_mp_aruco = z_pos_aruco_1 + CAvg_z
 
-        x_static_transform_ee_to_cam = -0.030
-        y_static_transform_ee_to_cam = -0.085
+        x_static_transform_ee_to_cam = -0.0145 # Directly between the center of the optical camera frame to the center
+        y_static_transform_ee_to_cam = -0.100 #-0.107 ## Offset from the center of the wrist to the lens of the camera
+
+        
+
+        aruco_pos1_arr = array([x_pos_aruco_1,y_pos_aruco_1])
+        aruco_pos2_arr = array([x_pos_aruco_2,y_pos_aruco_2])
+
+
+        ## Similarly get the angle of rotaiton with respect to the base
+
         target_pose.pose.position.x = (target_pose.pose.position.x - (x_static_transform_ee_to_cam + x_pos_mp_aruco) ) # Testing with ARUCO package
         target_pose.pose.position.y = (target_pose.pose.position.y + (y_static_transform_ee_to_cam + y_pos_mp_aruco) ) # Testing with ARUCO package
-        target_pose.pose.position.z -= 0.078 # Static offset for testing
-        
+        #target_pose.pose.position.z -= 0.075 # Static offset for testing
+        target_pose.pose.position.z -= 0.175 # Static offset for testing
+
+
+
         arm_client.get_logger().info(f"Moving to: x={target_pose.pose.position.x:.3f}, "
-                                    f"y={target_pose.pose.position.y:.3f}, "
-                                    f"z={target_pose.pose.position.z:.3f}")
+                                        f"y={target_pose.pose.position.y:.3f}, "
+                                        f"z={target_pose.pose.position.z:.3f}")
+        # qx,qy,qz,qw = arm_client.euler_to_quaternion(0,0,0.750)
+        current_quat = [target_pose.pose.orientation.x,target_pose.pose.orientation.y,target_pose.pose.orientation.z,target_pose.pose.orientation.w]
+        current_euler = arm_client.quaternion_to_euler(current_quat)
         
-        
-        # Execute move
+
+        aruco_euler_1 = arm_client.quaternion_to_euler(aruco_quat_1)
+        aruco_euler_2 = arm_client.quaternion_to_euler(aruco_quat_2)
+        print('Current euler angles is',current_euler)
+        print('Current euler angles aruco 1 is',aruco_euler_1)
+        print('Current euler angles aruco 2 is',aruco_euler_2)
         result = arm_client.move_to_cartesian_pose(target_pose.pose)
         arm_client.get_logger().info(f"Move completed: {result}")
+        #x_static_transform_ee_to_cam = 0.0
+
+        aruco_orientation_angle = arm_client.get_aruco_orientation(aruco_pos1_arr,aruco_pos2_arr)
+
+        #aruco_pose_angle = arm_client.get_seventh_axis_rotation(aruco_orientation)
+
+        print('Aruco angle now is',aruco_orientation_angle)
+        #input('stop and check angle')
+
         
-        # Move back to original position
-        arm_client.get_logger().info("Moving back to original position...")
-        result = arm_client.move_to_cartesian_pose(current_pose.pose)
-        arm_client.get_logger().info(f"Return move completed: {result}")
+        
+
+        
+        sign_of_aruco_orientation = -sign(aruco_orientation_angle)
+        #const_orientation_offset = 0.75
+
+        #const_orientation_offset = -sign_of_aruco_orientation*0.15
+
+        const_orientation_offset = current_euler[2]
+
+
+        #time.sleep(6.0)
+        #input('blocking call now')
+        # Execute move
+        if result:
+            print('Second move now')
+
+            print('aruco orientation angle is',aruco_orientation_angle)
+            result = arm_client.move_only_seventh_axis((aruco_orientation_angle))
+            print('result is',result)
+            arm_client.get_logger().info(f"Rotating only the last jiont: {result}")
+        
+        
+
         
         rclpy.spin(arm_client)
         

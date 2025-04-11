@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import sys
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionClient
@@ -13,6 +14,14 @@ from threading import Lock
 from rclpy.duration import Duration
 from action_msgs.msg import GoalStatus
 from rclpy.callback_groups import ReentrantCallbackGroup
+
+
+
+### Get the ArmManipulation Client coder here -> Getting from script, need to make it get from package directly
+## SHITTIEST WAY TO DO IMPORT PLEASE FIX THIS IMMEDIATELY- TODO 
+# Add the path where the script is installed
+sys.path.append('/home/imr/ros2_ws_coresense/src/kmriiwa_ros_stack/kmriiwa_arm_control/scripts/')
+from kmriiwa_arm_controller import ArmManipulationClient
 
 class NavigationClient(Node):
     def __init__(self):
@@ -90,14 +99,17 @@ class NavigationClient(Node):
 def main():
     rclpy.init()
     navigator = NavigationClient()
+    arm_client = ArmManipulationClient()
     
     # IMR ROS1 demo stations
     #[13.792, 2.29008, 0, 0, 1, 0], # Iniital start pose marked near keethi cell
     position_lists_to_station = [        
-        [5.9446, 1.60, 0, 0, 1, 0], # Near corridor in Bay3
-        #[4.3, 3.0, 0, 0, -1, 0.0438], # 3D Printer station         
-        [1.50, 1.60, 0, 0, -0.71279, 0.70134], # Assembly station with UR         
-        [1.88, 1.0825, 0, 0, -0.71279, 0.70134], # Assembly station with UR                       
+        #[-3.99683, -0.0315, 0, 0, -0.99953, 0.03048694577], # Near corridor in Bay3
+        #[4.3, 3.0, 0, 0, -1, 0.0438], # 3D Printer station
+        #[-10.9131,-0.9623727,0.0,0.0,0.0,-0.999895,0.0144902],         
+        [-7.73722,-0.85485,0.0,0.0,0.0,-0.68938,0.724396], # Assembly station with UR         
+        [-7.73722,-0.854851,0.0,0.0,0.0,-0.68938,0.72439], # Move to next station
+        [3.54289,0.383681,0.0,0.0,0.0,-0.999889,0.014893], # Exit station                       
         #[1.50, 1.60, 0, 0, 1, 0], # Assembly station with UR               
         #[13.792, 2.75, 0, 0, 1, 0] # teting only pure y-translation motino
 
@@ -105,11 +117,34 @@ def main():
     
     try:
         # Execute navigation sequence
+        my_counter = 0
         for position in position_lists_to_station:
             future = navigator.send_waypoint_goal(position)
             rclpy.spin_until_future_complete(navigator, future)
             while not navigator.navigation_complete:
                 rclpy.spin_once(navigator)
+
+            # Lets see if we perform arm manipulation hre- is ths blocking call for BT ??? - TODO
+            ## Is this shti method>?
+            if my_counter == 1:  # After the first waypoint
+                print("Navigation to first waypoint complete, starting arm manipulation")
+                            # Execute pick and place sequence with the arm
+                try:
+                    #start_approach_pick = [90,-31.33,0.0,84.04,0.0,-64.64,60.00]
+                    #arm_client.inter_points(start_approach_pick)
+                    
+                    # For pick and place sequence
+                    result = arm_client.start_pick_and_place()
+                    arm_client.get_logger().info(f"Pick and place completed: {result}")
+                    
+                    rclpy.spin(arm_client)
+                
+                except KeyboardInterrupt:
+                    arm_client.get_logger().info('Interrupted')
+                finally:
+                    arm_client.destroy_node()
+                    rclpy.shutdown()
+            my_counter += 1
             
         # Execute pick and place sequence
         # start_points = [90.12, -43.52, 0.0, 90.43, 0.0, -46.07, 60.12]

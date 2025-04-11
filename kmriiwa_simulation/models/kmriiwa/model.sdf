@@ -381,6 +381,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_1'>
+    <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_1'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 -0.03 0.12 0 -0 0</pose>
@@ -451,6 +452,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_2'>
+    <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_2'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0.0003 0.059 0.042 0 -0 0</pose>
@@ -521,6 +523,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_3'>
+    <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_3'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.03 0.13 0 -0 0</pose>
@@ -591,6 +594,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_4'>
+    <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_4'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.067 0.034 0 -0 0</pose>
@@ -661,6 +665,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_5'>
+      <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_5'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0.0001 0.021 0.076 0 -0 0</pose>
@@ -731,6 +736,7 @@
       </axis>
     </joint>
     <link name='kmriiwa_link_6'>
+      <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_6'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.0006 0.0004 0 -0 0</pose>
@@ -801,6 +807,9 @@
       </axis>
       <physics type='ode'>
         <!-- Other physics parameters -->
+        <real_time_update_rate>1000</real_time_update_rate>
+	<max_step_size>0.001</max_step_size>
+	<real_time_factor>1.0</real_time_factor>
         <ode>
           <solver>
             <type>quick</type>
@@ -817,6 +826,7 @@
       </physics>
     </joint>
     <link name='kmriiwa_link_7'>
+      <gravity>0</gravity>
       <pose relative_to='kmriiwa_joint_7'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0 0.02 0 -0 0</pose>

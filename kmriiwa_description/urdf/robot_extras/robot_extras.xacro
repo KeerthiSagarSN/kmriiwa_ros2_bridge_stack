@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Gripper attachment with static transform using mesh files -->
+  <xacro:macro name="iiwa_gripper" params="parent_link robot_name">
+    <joint name="${robot_name}_gripper_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${robot_name}_gripper_link"/>
+      <origin xyz="0 0 0" rpy="${0.0 * pi/180}  0  ${0.0 * pi/180}"/> <!-- Adjust position as needed -->
+    </joint>
+    
+    <link name="${robot_name}_gripper_link">
+      <visual>
+        <origin xyz="0 0 0.05" rpy="${-90.0 * pi/180}  0  ${120.0 * pi/180}"/> <!-- Adjust position/orientation of mesh as needed -->
+        <geometry>
+          <mesh filename="package://kmriiwa_description/meshes/iiwa_gripper/visual/iiwa_gripper.stl" scale="1 1 1"/>
+        </geometry>
+        <material name="DarkGrey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0.05" rpy="${-90.0 * pi/180}  0  ${120.0 * pi/180}"/>
+        <geometry>
+          <mesh filename="package://kmriiwa_description/meshes/iiwa_gripper/collision/iiwa_gripper_collision.stl" scale="1 1 1"/>
+        </geometry>
+      </collision>
+    </link>
+    <joint name="${robot_name}_gripper_tcp_joint" type="fixed">
+      <parent link="${robot_name}_gripper_link"/>
+      <child link="${robot_name}_gripper_tcp"/>
+      <origin xyz="0 0 0.2" rpy="${-90.0 * pi/180}  0  ${120.0 * pi/180}"/> <!-- Adjust position as needed -->
+    </joint>
+    <link name="${robot_name}_gripper_tcp"/>
+
+  </xacro:macro>
+  
+  <!-- Camera attachment with static transform using mesh files -->
+  <xacro:macro name="iiwa_arm_camera" params="parent_link robot_name">
+    <joint name="${robot_name}_camera_joint" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${robot_name}_camera_link"/>
+      <origin xyz="0.0 0 0.0" rpy="0 0 ${0.0 * pi/180}"/> <!-- Adjust position as needed -->
+    </joint>
+    
+    <link name="${robot_name}_camera_link">
+      <visual>
+        <origin xyz="0 0.07 0" rpy="0 ${-90.0 * pi/180} 0"/> <!-- Adjust position/orientation of mesh as needed -->
+        <geometry>
+          <mesh filename="package://kmriiwa_description/meshes/iiwa_camera/visual/iiwa_camera.stl" scale="1 1 1"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+      <collision>
+        <origin xyz="0 0.07 0" rpy="0 ${-90.0 * pi/180} 0"/>
+        <geometry>
+          <mesh filename="package://kmriiwa_description/meshes/iiwa_camera/collision/iiwa_camera_collision.stl" scale="1 1 1"/>
+        </geometry>
+      </collision>
+    </link>
+    <!-- Frame for realsense camera here- only frame here -->
+
+    <joint name="${robot_name}_gripper_tcp_joint" type="fixed">
+      <parent link="${robot_name}_gripper_link"/>
+      <child link="${robot_name}_gripper_tcp"/>
+      <origin xyz="0 0 0.2" rpy="${-90.0 * pi/180}  0  ${120.0 * pi/180}"/> <!-- Adjust position as needed -->
+    </joint>
+    <link name="${robot_name}_gripper_tcp"/>
+
+  </xacro:macro>
+</robot>

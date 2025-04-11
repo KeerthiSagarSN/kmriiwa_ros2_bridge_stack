@@ -94,10 +94,12 @@ def main():
     # IMR ROS1 demo stations
     #[13.792, 2.29008, 0, 0, 1, 0], # Iniital start pose marked near keethi cell
     position_lists_to_station = [        
-        [5.9446, 1.60, 0, 0, 1, 0], # Near corridor in Bay3
-        #[4.3, 3.0, 0, 0, -1, 0.0438], # 3D Printer station         
-        [1.50, 1.60, 0, 0, -0.71279, 0.70134], # Assembly station with UR         
-        [1.88, 1.0825, 0, 0, -0.71279, 0.70134], # Assembly station with UR                       
+        #[-3.99683, -0.0315, 0, 0, -0.99953, 0.03048694577], # Near corridor in Bay3
+        #[4.3, 3.0, 0, 0, -1, 0.0438], # 3D Printer station
+        #[-10.9131,-0.9623727,0.0,0.0,0.0,-0.999895,0.0144902],         
+        #[-7.73722,-0.85485,0.0,0.0,0.0,-0.68938,0.724396], # Assembly station with UR         
+        [-7.849,-0.98859,0.0,0.0,0.0,-0.6977,0.7160], # Move to next station
+        #[3.54289,0.383681,0.0,0.0,0.0,-0.999889,0.014893], # Exit station                       
         #[1.50, 1.60, 0, 0, 1, 0], # Assembly station with UR               
         #[13.792, 2.75, 0, 0, 1, 0] # teting only pure y-translation motino
 

@@ -20,7 +20,8 @@ import time
 from copy import deepcopy
 import time
 import asyncio
-
+from rclpy.duration import Duration
+### Need to put this in a separate file ############################################
 
 ############# Only for Testing ######################################################
 class ArmManipulationClient(Node):
@@ -83,6 +84,9 @@ class ArmManipulationClient(Node):
             'kmriiwa/arm/command/JointPosition',
             1
         )
+
+
+
         
         # Setup KDL
         self.setup_kdl()
@@ -306,6 +310,7 @@ class ArmManipulationClient(Node):
 
     def trajectory_action(self, joint_position_desired):
         with self.mutex1:
+            # Create and send the message
             joint_positions = [pos for pos in joint_position_desired]
             traj_msg = JointPosition()
             traj_msg.kmriiwa_joint_1 = joint_positions[0]
@@ -317,12 +322,37 @@ class ArmManipulationClient(Node):
             traj_msg.kmriiwa_joint_7 = joint_positions[6]
             
             self.traj_desired_publisher.publish(traj_msg)
+        
+        # Check if joint states reached, so that dont ave to wait forever to finish
+        tolerance = 0.001  # radians
+        
+        # Create a timeout mechanism
+        start_time = self.get_clock().now()
+        timeout_duration = Duration(seconds=30)  # trying lall stuff here mothing is working TODO action client 
+        
+        # Loop until joints are at desired position or timeout
+        while rclpy.ok():
+            # Check if we've reached timeout
+            if self.get_clock().now() - start_time > timeout_duration:
+                self.get_logger().error('Trajectory action timed out')
+                return False
             
+            # Get current joint positions
+            current_joints = self.joint_states_arr
             
-            #self.create_rate(0.1).sleep()
-            time.sleep(1.0)
-            #return self.traj_response.data == "done"
-            return True
+            # Check if all joints are within tolerance of desired position
+            all_joints_reached = True
+            for i in range(len(joint_positions)):
+                if abs(current_joints[i] - joint_positions[i]) > tolerance:
+                    all_joints_reached = False
+                    break
+            
+            if all_joints_reached:
+                self.get_logger().info('All joints reached desired positions')
+                return True
+            
+            # Spin once to process callbacks and update joint_states_arr
+            rclpy.spin_once(self, timeout_sec=0.1)
 
     def trajectory_action_completed(self, resp_traj):
         self.traj_response = resp_traj
@@ -339,16 +369,19 @@ class ArmManipulationClient(Node):
         robot_clearing_pose_points_1 = deg2rad([84.42,-25.44,0.0,57.30,0.0,-97.26,54.44]).tolist()
         robot_clearing_pose_points_2 = deg2rad([-9.06,-1.10,0.0,73.92,0.0,-104.98,51.55]).tolist()
         robot_clearing_pose_points_3 = deg2rad([-90.85,-1.10,0.0,73.92,0.0,-104.98,51.55]).tolist()
-        scan_aruco_pose_points = deg2rad([-90.12,-43.15,0.0,40.52,0.0,-96.34,52.27]).tolist()
+        scan_aruco_pose_points = deg2rad([-90.22,-23.86,0.0,70.96,0.0,-85.19,63.50]).tolist()
+        pre_place_points = deg2rad([-86.75,-55.46,0.0,35.42,0.0,-89.13,66.34]).tolist()
+
+        place_pose_points = deg2rad([-86.76,-56.73,0.0,42.51,0.0,-80.78,66.34]).tolist()
         
         print('start_approach_pick is',start_approach_pick)
         # Execute pick sequence
 
         res1 = self.move_to_joint_pose(start_approach_pick)
-        time.sleep(3.0)
-        print('res1 is',res1)
-        print('res1-success')
-        time.sleep(3.0)
+        #time.sleep(3.0)
+        #print('res1 is',res1)
+        #print('res1-success')
+        #time.sleep(3.0)
 
         if res1:
             print('inside next move')
@@ -361,41 +394,64 @@ class ArmManipulationClient(Node):
 
                 if res2:
                     res3 = self.move_to_joint_pose(robot_clearing_pose_points_1)
-                    time.sleep(3.0)
+                    #time.sleep(3.0)
                     
                     if res3:
                         res4 = self.move_to_joint_pose(robot_clearing_pose_points_2)
-                        time.sleep(3.0)
+                        #time.sleep(3.0)
                         
                         if res4:
                             res5 = self.move_to_joint_pose(robot_clearing_pose_points_3)
-                            time.sleep(3.0)
+                            #time.sleep(3.0)
                             
                             if res5:
-                                res6 = self.move_to_joint_pose(scan_aruco_pose_points)
-                                time.sleep(3.0)
-                                
-                                if res6:
-                                    
-                                    res7 = self.move_to_joint_pose(start_approach_pick)
-                                    time.sleep(3.0)
-                                    print('res1 is',res7)
-                                    print('res1-success')
-                                    time.sleep(3.0)
+                                res6_intn1 = self.move_to_joint_pose(scan_aruco_pose_points)
+                                #time.sleep(3.0)
 
-                                    if res7:
-                                        print('inside next move')
-                                        
-                                        
-                                        res8 = self.move_to_joint_pose(start_pick_points_on_robot)
-                                        time.sleep(12.0)
-                                        
-                                        #time.sleep(10.0)
+                                if res6_intn1:
+                                    res6_intn2 = self.move_to_joint_pose(pre_place_points)
 
-                                        if res8:                                     
-                                            return True
-                                        else:
-                                            return False
+                                    if res6_intn2:
+                                        res6_intn3 = self.move_to_joint_pose(place_pose_points)
+                                        
+
+                                        if res6_intn3:
+                                            nnn1 = self.gripper_action('open',2.0)
+                                            
+                                            if nnn1:
+                                                nnn2 = self.move_to_joint_pose(pre_place_points)
+                                                if nnn2:
+
+                                                    res6_int2 = self.move_to_joint_pose(robot_clearing_pose_points_3)
+
+                                                    if res6_int2:
+                                                        res6_int3 = self.move_to_joint_pose(robot_clearing_pose_points_2)
+
+                                                        if res6_int3:
+                                                            res6 = self.move_to_joint_pose(robot_clearing_pose_points_1)
+
+                                                
+                                                            if res6:
+                                                                
+                                                                res7 = self.move_to_joint_pose(start_approach_pick)
+                                                                #time.sleep(3.0)
+                                                                print('res1 is',res7)
+                                                                print('res1-success')
+                                                                #time.sleep(3.0)
+
+                                                                if res7:
+                                                                    print('inside next move')
+                                                                    
+                                                                    
+                                                                    res8 = self.move_to_joint_pose(start_pick_points_on_robot)
+                                                                    #time.sleep(12.0)
+                                                                    
+                                                                    #time.sleep(10.0)
+
+                                                                    if res8:                                     
+                                                                        return True
+                                                                    else:
+                                                                        return False
 
 
         else:

@@ -120,7 +120,9 @@ class ArmManipulationClient(Node):
             
             # Create KDL tree
             self.base_link = "kmriiwa_link_0"
-            self.ee_link = "kmriiwa_link_ee"
+            #self.ee_link = "kmriiwa_link_ee"
+            ## I have gripper stl now- keeping itmore realistic for simulation testing
+            self.ee_link = "kmriiwa_gripper_tcp"
 
             # Build the kdl_chain here
             self.kdl_chain = kdl_tree.getChain(self.base_link, self.ee_link)
@@ -306,7 +308,7 @@ class ArmManipulationClient(Node):
             new_joints[i] = self.joint_states_arr[i]
         #new_joints = deepcopy(current_joints)
         print('Current joints are',new_joints)
-        new_joints[6] = joint_angle_offset
+        new_joints[6] += joint_angle_offset
         print('New joints are',new_joints)
         try:
             #input('stop and do this')
@@ -436,7 +438,9 @@ class ArmManipulationClient(Node):
         x2, y2 = vector2
         
         # Using the formula from cross and dot products
-        angle_rad = math.atan2(x1*y2 - y1*x2, x1*x2 + y1*y2)
+        dx = x2 - x1
+        dy = y2 - y1
+        angle_rad = math.atan2(dy, dx)
         return angle_rad
 
 
@@ -706,6 +710,9 @@ def main():
         y_pos_mp_aruco = y_pos_aruco_1 + CAvg_y
         z_pos_mp_aruco = z_pos_aruco_1 + CAvg_z
 
+
+
+
         x_static_transform_ee_to_cam = -0.0145 # Directly between the center of the optical camera frame to the center
         y_static_transform_ee_to_cam = -0.100 #-0.107 ## Offset from the center of the wrist to the lens of the camera
 
@@ -720,7 +727,8 @@ def main():
         target_pose.pose.position.x = (target_pose.pose.position.x - (x_static_transform_ee_to_cam + x_pos_mp_aruco) ) # Testing with ARUCO package
         target_pose.pose.position.y = (target_pose.pose.position.y + (y_static_transform_ee_to_cam + y_pos_mp_aruco) ) # Testing with ARUCO package
         #target_pose.pose.position.z -= 0.075 # Static offset for testing
-        target_pose.pose.position.z -= 0.175 # Static offset for testing
+        #target_pose.pose.position.z -= 0.175 # Static offset for testing
+        target_pose.pose.position.z -= 0.0 # Static offset for testing
 
 
 
@@ -746,6 +754,7 @@ def main():
         #aruco_pose_angle = arm_client.get_seventh_axis_rotation(aruco_orientation)
 
         print('Aruco angle now is',aruco_orientation_angle)
+        print('Aruco angle now in degrees is',rad2deg(aruco_orientation_angle))
         #input('stop and check angle')
 
         
@@ -753,11 +762,11 @@ def main():
 
         
         sign_of_aruco_orientation = -sign(aruco_orientation_angle)
-        #const_orientation_offset = 0.75
+        const_orientation_offset = 0.785398
 
         #const_orientation_offset = -sign_of_aruco_orientation*0.15
 
-        const_orientation_offset = current_euler[2]
+        #const_orientation_offset = current_euler[1]
 
 
         #time.sleep(6.0)
@@ -769,7 +778,18 @@ def main():
             print('aruco orientation angle is',aruco_orientation_angle)
             result = arm_client.move_only_seventh_axis((aruco_orientation_angle))
             print('result is',result)
-            arm_client.get_logger().info(f"Rotating only the last jiont: {result}")
+            # arm_client.get_logger().info(f"Rotating only the last jiont: {result}")
+
+
+            # Get current TCP pose agai to check
+            current_pose = arm_client.get_current_tcp_pose()
+            if current_pose is None:
+                arm_client.get_logger().error("Could not get current TCP pose")
+                return
+                
+            arm_client.get_logger().info(f"Current TCP position: x={current_pose.pose.position.x:.3f}, "
+                                        f"y={current_pose.pose.position.y:.3f}, "
+                                        f"z={current_pose.pose.position.z:.3f}")
         
         
 

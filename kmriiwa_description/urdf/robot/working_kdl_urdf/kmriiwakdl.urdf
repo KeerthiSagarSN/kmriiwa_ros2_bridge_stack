@@ -35,9 +35,6 @@
     <color rgba="0.5 0.5 0.5 1"/>
   </material>
   <!-- distance from wheel-floor contact point to base bottom side-->
-  <!--Import the Robot extras macro -->
-  <!-- <xacro:include filename="$(find kmriiwa_description)/urdf/robot_extras/robot_extras.xacro"/> -->
-  <!-- <xacro:arg name="robot_extras" default="$(find kmriiwa_description)/urdf/robot_extras/empty.xacro" /> -->
   <link name="kmriiwa_base_footprint"/>
   <joint name="kmriiwa_footprint_to_base_link" type="fixed">
     <parent link="kmriiwa_base_footprint"/>
@@ -210,30 +207,48 @@
     <limit effort="100" velocity="100"/>
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
-  <!-- ROS2 Force based move plugin -->
+  <!-- Gazebo planar move plugin -->
+  <!-- <gazebo>
+        <plugin name='planar_move' filename='libgazebo_ros_planar_move.so'>
+            <robotNamespace>/${robot_name}</robotNamespace>
+            <commandTopic>base/command/cmd_vel</commandTopic>
+            <odometryTopic>base/state/odom</odometryTopic>
+            <update_rate>100</update_rate>
+            <publish_rate>10</publish_rate>
+
+            
+            <publish_odom>true</publish_odom>
+            <publish_odom_tf>true</publish_odom_tf>
+
+            <odometryFrame>odom</odometryFrame>
+            <robotBaseFrame>base_link</robotBaseFrame>
+            <odometryRate>20.0</odometryRate>
+
+            <covariance_x>0.0001</covariance_x>
+            <covariance_y>0.0001</covariance_y>
+            <covariance_yaw>0.01</covariance_yaw>
+        </plugin>
+    </gazebo>  -->
+  <!-- Hector ros force based planar move plugin -->
   <gazebo>
     <plugin filename="libgazebo_ros_force_based_move.so" name="ros_force_based_move">
-      <ros>
-        <namespace>/kmriiwa</namespace>
-        <remapping>cmd_vel:=base/command/cmd_vel</remapping>
-        <remapping>odom:=base/state/odom</remapping>
-      </ros>
-      <robot_base_frame>kmriiwa_base_footprint</robot_base_frame>
-      <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
-      <odom_frame>kmriiwa_odom</odom_frame>
-      <odometry_rate>20.0</odometry_rate>
+      <robotNamespace>/kmriiwa</robotNamespace>
+      <commandTopic>base/command/cmd_vel</commandTopic>
+      <odometryTopic>base/state/odom</odometryTopic>
+      <robotBaseFrame>kmriiwa_base_footprint</robotBaseFrame>
+      <publishOdometryTf>true</publishOdometryTf>
+      <odometryFrame>kmriiwa_odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
       <yaw_velocity_p_gain>500</yaw_velocity_p_gain>
       <x_velocity_p_gain>1000</x_velocity_p_gain>
       <y_velocity_p_gain>1000</y_velocity_p_gain>
     </plugin>
   </gazebo>
-  <!-- Laser B1 -->
   <gazebo reference="kmriiwa_laser_B1_link">
     <sensor name="sensor_B1" type="ray">
       <always_on>true</always_on>
       <visualize>true</visualize>
-      <update_rate>10.0</update_rate>
+      <update_rate>10</update_rate>
       <ray>
         <scan>
           <horizontal>
@@ -245,7 +260,7 @@
         </scan>
         <range>
           <min>0.12</min>
-          <max>30.0</max>
+          <max>15</max>
           <resolution>0.0100</resolution>
         </range>
         <noise>
@@ -254,17 +269,14 @@
           <stddev>0.01</stddev>
         </noise>
       </ray>
-      <plugin filename="libgazebo_ros_ray_sensor.so" name="gazebo_sensor_B1_controller">
-        <ros>
-          <namespace>/kmriiwa</namespace>
-          <remapping>~/out:=base/state/LaserB1Scan</remapping>
-        </ros>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_sensor_B1_controller">
+        <robotNamespace>/</robotNamespace>
+        <topicName>/kmriiwa/base/state/LaserB1Scan</topicName>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>kmriiwa_laser_B1_link</frame_name>
+        <frameName>kmriiwa_laser_B1_link</frameName>
       </plugin>
     </sensor>
   </gazebo>
-  <!-- Laser B4 -->
   <gazebo reference="kmriiwa_laser_B4_link">
     <sensor name="sensor_B4" type="ray">
       <always_on>true</always_on>
@@ -281,7 +293,7 @@
         </scan>
         <range>
           <min>0.12</min>
-          <max>30.0</max>
+          <max>15</max>
           <resolution>0.0100</resolution>
         </range>
         <noise>
@@ -290,13 +302,11 @@
           <stddev>0.01</stddev>
         </noise>
       </ray>
-      <plugin filename="libgazebo_ros_ray_sensor.so" name="gazebo_sensor_B4_controller">
-        <ros>
-          <namespace>/kmriiwa</namespace>
-          <remapping>~/out:=base/state/LaserB4Scan</remapping>
-        </ros>
+      <plugin filename="libgazebo_ros_laser.so" name="gazebo_sensor_B4_controller">
+        <robotNamespace>/</robotNamespace>
+        <topicName>/kmriiwa/base/state/LaserB4Scan</topicName>
         <output_type>sensor_msgs/LaserScan</output_type>
-        <frame_name>kmriiwa_laser_B4_link</frame_name>
+        <frameName>kmriiwa_laser_B4_link</frameName>
       </plugin>
     </sensor>
   </gazebo>
@@ -622,128 +632,67 @@
     <provideFeedback>true</provideFeedback>
   </gazebo>
   <!-- The ft_sensor plugin -->
-  <!-- <gazebo>
-      <plugin name="ft_sensor" filename="libgazebo_ros_ft_sensor.so">
-        <updateRate>50.0</updateRate>
-        <topicName>/${robot_name}/state/CartesianWrench</topicName>
-        <jointName>${robot_name}_joint_7</jointName>
-      </plugin>
-    </gazebo>    -->
+  <gazebo>
+    <plugin filename="libgazebo_ros_ft_sensor.so" name="ft_sensor">
+      <updateRate>50.0</updateRate>
+      <topicName>/kmriiwa/state/CartesianWrench</topicName>
+      <jointName>kmriiwa_joint_7</jointName>
+    </plugin>
+  </gazebo>
   <!-- Load Gazebo lib and set the robot namespace -->
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
       <robotNamespace>/kmriiwa/arm</robotNamespace>
       <robotParam>/kmriiwa/robot_description</robotParam>
-      <!-- Added parameters for gravity compensation -->
-      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-      <legacyModeNS>true</legacyModeNS>
-      <compensateGravity>true</compensateGravity>
     </plugin>
-  </gazebo>
-  <!-- Add joint damping to prevent falling -->
-  <gazebo reference="kmriiwa_joint_1">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_2">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_3">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_4">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_5">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_6">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
-  </gazebo>
-  <gazebo reference="kmriiwa_joint_7">
-    <implicitSpringDamper>true</implicitSpringDamper>
-    <provideFeedback>true</provideFeedback>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <kp>1000000.0</kp>
-    <kd>100.0</kd>
   </gazebo>
   <!-- Link0 -->
   <gazebo reference="kmriiwa_link_0">
     <material>Gazebo/Grey</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link1 -->
   <gazebo reference="kmriiwa_link_1">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link2 -->
   <gazebo reference="kmriiwa_link_2">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link3 -->
   <gazebo reference="kmriiwa_link_3">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link4 -->
   <gazebo reference="kmriiwa_link_4">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link5 -->
   <gazebo reference="kmriiwa_link_5">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link6 -->
   <gazebo reference="kmriiwa_link_6">
     <material>Gazebo/Orange</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <!-- Link7 -->
   <gazebo reference="kmriiwa_link_7">
     <material>Gazebo/Grey</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
   </gazebo>
   <transmission name="kmriiwa_tran_1">
     <robotNamespace>/kmriiwa/arm</robotNamespace>
@@ -822,63 +771,7 @@
       <mechanicalReduction>1</mechanicalReduction>
     </actuator>
   </transmission>
-  <joint name="kmriiwa_gripper_joint" type="fixed">
-    <parent link="kmriiwa_link_7"/>
-    <child link="kmriiwa_gripper_link"/>
-    <origin rpy="0.0  0  0.0" xyz="0 0 0"/>
-    <!-- Adjust position as needed -->
-  </joint>
-  <link name="kmriiwa_gripper_link">
-    <visual>
-      <origin rpy="-1.5707963267948966  0  2.0943951023931953" xyz="0 0 0.05"/>
-      <!-- Adjust position/orientation of mesh as needed -->
-      <geometry>
-        <mesh filename="package://kmriiwa_description/meshes/iiwa_gripper/visual/iiwa_gripper.stl" scale="1 1 1"/>
-      </geometry>
-      <material name="DarkGrey"/>
-    </visual>
-    <collision>
-      <origin rpy="-1.5707963267948966  0  2.0943951023931953" xyz="0 0 0.05"/>
-      <geometry>
-        <mesh filename="package://kmriiwa_description/meshes/iiwa_gripper/collision/iiwa_gripper_collision.stl" scale="1 1 1"/>
-      </geometry>
-    </collision>
-  </link>
-  <joint name="kmriiwa_gripper_tcp_joint" type="fixed">
-    <parent link="kmriiwa_gripper_link"/>
-    <child link="kmriiwa_gripper_tcp"/>
-    <origin rpy="-1.5707963267948966  0  2.0943951023931953" xyz="0 0 0.2"/>
-    <!-- Adjust position as needed -->
-  </joint>
-  <link name="kmriiwa_gripper_tcp"/>
-  <joint name="kmriiwa_camera_joint" type="fixed">
-    <parent link="kmriiwa_link_6"/>
-    <child link="kmriiwa_camera_link"/>
-    <origin rpy="0 0 0.0" xyz="0.0 0 0.0"/>
-    <!-- Adjust position as needed -->
-  </joint>
-  <link name="kmriiwa_camera_link">
-    <visual>
-      <origin rpy="0 -1.5707963267948966 0" xyz="0 0.07 0"/>
-      <!-- Adjust position/orientation of mesh as needed -->
-      <geometry>
-        <mesh filename="package://kmriiwa_description/meshes/iiwa_camera/visual/iiwa_camera.stl" scale="1 1 1"/>
-      </geometry>
-      <material name="Grey"/>
-    </visual>
-    <collision>
-      <origin rpy="0 -1.5707963267948966 0" xyz="0 0.07 0"/>
-      <geometry>
-        <mesh filename="package://kmriiwa_description/meshes/iiwa_camera/collision/iiwa_camera_collision.stl" scale="1 1 1"/>
-      </geometry>
-    </collision>
-  </link>
-  <!-- Frame for realsense camera here- only frame here -->
-  <joint name="kmriiwa_realsense_frame_joint" type="fixed">
-    <parent link="kmriiwa_camera_link"/>
-    <child link="camera_color_optical_frame_tf"/>
-    <origin rpy="0 -1.5707963267948966 0" xyz="0 0.07 0.0"/>
-    <!-- Adjust position as needed -->
-  </joint>
-  <link name="camera_color_optical_frame_tf"/>
+  <!-- This file is a placeholder which is included by default from
+       kmriiwa.urdf.xacro. If a robot is being customized and requires
+       additional URDF, add them here. -->
 </robot>

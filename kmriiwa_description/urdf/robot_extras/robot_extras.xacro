@@ -57,12 +57,12 @@
     </link>
     <!-- Frame for realsense camera here- only frame here -->
 
-    <joint name="${robot_name}_gripper_tcp_joint" type="fixed">
-      <parent link="${robot_name}_gripper_link"/>
-      <child link="${robot_name}_gripper_tcp"/>
-      <origin xyz="0 0 0.2" rpy="${-90.0 * pi/180}  0  ${120.0 * pi/180}"/> <!-- Adjust position as needed -->
+    <joint name="${robot_name}_realsense_frame_joint" type="fixed">
+      <parent link="${robot_name}_camera_link"/>
+      <child link="camera_color_optical_frame_tf"/>
+      <origin xyz="0 0.07 0.0" rpy="0 ${-90.0 * pi/180} 0"/> <!-- Adjust position as needed -->
     </joint>
-    <link name="${robot_name}_gripper_tcp"/>
+    <link name="camera_color_optical_frame_tf"/>
 
   </xacro:macro>
 </robot>

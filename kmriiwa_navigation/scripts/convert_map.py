@@ -25,7 +25,7 @@ def convert_png_to_pgm_yaml(png_path, output_dir=None, resolution=0.05, origin=N
     # For navigation maps, free space is typically represented by white (255)
     # and obstacles by black (0). If the image uses the opposite convention, invert it.
     # Uncomment the line below if needed:
-    # img = 255 - img
+    #img = 255 - img
     
     # Ensure proper thresholding for nav2
     # Values below 127 will be considered occupied (0), above as free (255)
@@ -75,7 +75,8 @@ if __name__ == "__main__":
     
     png_file = sys.argv[1]
     
-    resolution = 0.05  # Default resolution (meters/pixel)
+    #resolution = 0.05  # Default resolution (meters/pixel)
+    resolution = None  # Default resolution (meters/pixel)
     if len(sys.argv) > 2:
         resolution = float(sys.argv[2])
     

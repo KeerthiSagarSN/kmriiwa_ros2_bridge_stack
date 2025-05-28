@@ -282,12 +282,12 @@
             <horizontal>
               <samples>320</samples>
               <resolution>1</resolution>
-              <min_angle>-2.3562</min_angle>
-              <max_angle>0.9853</max_angle>
+              <min_angle>-3.1062</min_angle>
+              <max_angle>1.55</max_angle>
             </horizontal>
           </scan>
           <range>
-            <min>0.3</min>
+            <min>0.05</min>
             <max>10</max>
             <resolution>0.01</resolution>
           </range>
@@ -315,12 +315,12 @@
             <horizontal>
               <samples>240</samples>
               <resolution>1</resolution>
-              <min_angle>0.7853</min_angle>
-              <max_angle>3.6268</max_angle>
+              <min_angle>0.05</min_angle>
+              <max_angle>4.7268</max_angle>
             </horizontal>
           </scan>
           <range>
-            <min>0.3</min>
+            <min>0.05</min>
             <max>10</max>
             <resolution>0.01</resolution>
           </range>
@@ -372,11 +372,17 @@
           <effort>300</effort>
           <velocity>10</velocity>
         </limit>
-        <dynamics>
+        <!--<dynamics>
           <damping>0.5</damping>
           <friction>0</friction>
           <spring_reference>0</spring_reference>
           <spring_stiffness>0</spring_stiffness>
+        </dynamics>-->
+        <dynamics>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -444,10 +450,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -515,10 +521,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -586,10 +592,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -657,10 +663,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -728,10 +734,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
     </joint>
@@ -799,10 +805,10 @@
           <velocity>10</velocity>
         </limit>
         <dynamics>
-          <damping>0.5</damping>
-          <friction>0</friction>
+          <damping>50.0</damping>
+          <friction>10.0</friction>
           <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
+          <spring_stiffness>1000.0</spring_stiffness>
         </dynamics>
       </axis>
       <physics type='ode'>

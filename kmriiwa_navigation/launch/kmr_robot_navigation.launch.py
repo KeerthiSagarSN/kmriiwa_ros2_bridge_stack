@@ -13,6 +13,13 @@ def generate_launch_description():
     pkg_kmriiwa_bringup = get_package_share_directory('kmriiwa_bringup')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
+
+    # For Groot monitoring
+    # enable_groot_arg = DeclareLaunchArgument(
+    #     'enable_groot_monitoring',
+    #     default_value='true',
+    #     description='Enable Groot ZMQ monitoring for behavior tree visualization'
+    # )
     # Launch arguments
     map_yaml_file = LaunchConfiguration('map')
     map_arg = DeclareLaunchArgument(
@@ -92,6 +99,18 @@ def generate_launch_description():
         parameters=[os.path.join(pkg_kmriiwa_nav, 'config', 'nav2_params.yaml')]
     )
 
+    # Groot monitoring - Remove if not necessary in the future
+    nav2_zmq_bridge = Node(
+        package='groot_test_cpp',
+        executable='nav2_zmq_bridge',
+        name='nav2_zmq_bridge',
+        output='screen',
+        parameters=[{'use_sim_time': False,}],
+        # condition=IfCondition(LaunchConfiguration('enable_groot_monitoring')),
+        respawn=True,
+        respawn_delay=3.0
+    )
+
     # Single Lifecycle Manager for all navigation nodes
     nav_lifecycle_manager = Node(
             package='nav2_lifecycle_manager',
@@ -164,6 +183,7 @@ def generate_launch_description():
         planner_server,
         behavior_server,
         bt_navigator,
+        nav2_zmq_bridge,
         nav_lifecycle_manager,
         robot_bringup,
         rviz

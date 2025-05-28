@@ -680,7 +680,7 @@ def main():
         w_aruco_ori_1 = pose_aruco_ori_1['w']
         
         aruco_quat_1 = array([x_aruco_ori_1,y_aruco_ori_1,z_aruco_ori_1,w_aruco_ori_1])
-        print('aruco_quaternion_1 is',aruco_quat_1)
+        # print('aruco_quaternion_1 is',aruco_quat_1)
 
         pose_aruco_position_2 = arm_client.get_marker_pose(10)['position']
         x_pos_aruco_2 = pose_aruco_position_2['x']
@@ -694,7 +694,7 @@ def main():
         w_aruco_ori_2 = pose_aruco_ori_2['w']
         aruco_quat_2 = array([x_aruco_ori_2,y_aruco_ori_2,z_aruco_ori_2,w_aruco_ori_2])
         
-        print('aruco_quaternion_2 is',aruco_quat_2)
+        # print('aruco_quaternion_2 is',aruco_quat_2)
         
         ## KUTTI VECTOR ALGEBRA
 
@@ -713,9 +713,11 @@ def main():
 
 
 
-        x_static_transform_ee_to_cam = -0.0145 # Directly between the center of the optical camera frame to the center
-        y_static_transform_ee_to_cam = -0.100 #-0.107 ## Offset from the center of the wrist to the lens of the camera
-
+        #x_static_transform_ee_to_cam = 0.0145 # Directly between the center of the optical camera frame to the center
+        x_static_transform_ee_to_cam = -0.002 # Directly between the center of the optical camera frame to the center
+        #x_static_transform_ee_to_cam = -0.000  ## This is because of the offset from the center of the plate to the holding position
+        #y_static_transform_ee_to_cam = -0.080 #-0.107 ## Offset from the center of the wrist to the lens of the camera
+        y_static_transform_ee_to_cam = -0.080
         
 
         aruco_pos1_arr = array([x_pos_aruco_1,y_pos_aruco_1])
@@ -724,11 +726,18 @@ def main():
 
         ## Similarly get the angle of rotaiton with respect to the base
 
-        target_pose.pose.position.x = (target_pose.pose.position.x - (x_static_transform_ee_to_cam + x_pos_mp_aruco) ) # Testing with ARUCO package
-        target_pose.pose.position.y = (target_pose.pose.position.y + (y_static_transform_ee_to_cam + y_pos_mp_aruco) ) # Testing with ARUCO package
+
+        
+
+        target_pose.pose.position.x = (target_pose.pose.position.x + (x_static_transform_ee_to_cam) + (x_pos_mp_aruco) ) # Testing with ARUCO package
+        #target_pose.pose.position.y = (target_pose.pose.position.y - (y_static_transform_ee_to_cam + y_pos_mp_aruco) ) # Testing with ARUCO package
         #target_pose.pose.position.z -= 0.075 # Static offset for testing
+        target_pose.pose.position.y = (target_pose.pose.position.y - (y_pos_mp_aruco) - y_static_transform_ee_to_cam   ) # Testing with ARUCO package
+
         #target_pose.pose.position.z -= 0.175 # Static offset for testing
-        target_pose.pose.position.z -= 0.0 # Static offset for testing
+        #target_pose.pose.position.z -= 0.130 # Static offset for testing
+        #target_pose.pose.position.z -= 0.09 # Static offset for testing
+        target_pose.pose.position.z -= 0.070 # Static offset for testing - with screw
 
 
 
@@ -742,9 +751,9 @@ def main():
 
         aruco_euler_1 = arm_client.quaternion_to_euler(aruco_quat_1)
         aruco_euler_2 = arm_client.quaternion_to_euler(aruco_quat_2)
-        print('Current euler angles is',current_euler)
-        print('Current euler angles aruco 1 is',aruco_euler_1)
-        print('Current euler angles aruco 2 is',aruco_euler_2)
+        # print('Current euler angles is',current_euler)
+        # print('Current euler angles aruco 1 is',aruco_euler_1)
+        # print('Current euler angles aruco 2 is',aruco_euler_2)
         result = arm_client.move_to_cartesian_pose(target_pose.pose)
         arm_client.get_logger().info(f"Move completed: {result}")
         #x_static_transform_ee_to_cam = 0.0
@@ -753,8 +762,8 @@ def main():
 
         #aruco_pose_angle = arm_client.get_seventh_axis_rotation(aruco_orientation)
 
-        print('Aruco angle now is',aruco_orientation_angle)
-        print('Aruco angle now in degrees is',rad2deg(aruco_orientation_angle))
+        # print('Aruco angle now is',aruco_orientation_angle)
+        # print('Aruco angle now in degrees is',rad2deg(aruco_orientation_angle))
         #input('stop and check angle')
 
         
@@ -775,7 +784,7 @@ def main():
         if result:
             print('Second move now')
 
-            print('aruco orientation angle is',aruco_orientation_angle)
+            # print('aruco orientation angle is',aruco_orientation_angle)
             result = arm_client.move_only_seventh_axis((aruco_orientation_angle))
             print('result is',result)
             # arm_client.get_logger().info(f"Rotating only the last jiont: {result}")
@@ -783,6 +792,7 @@ def main():
 
             # Get current TCP pose agai to check
             current_pose = arm_client.get_current_tcp_pose()
+            target_pose = deepcopy(current_pose)
             if current_pose is None:
                 arm_client.get_logger().error("Could not get current TCP pose")
                 return
@@ -790,8 +800,25 @@ def main():
             arm_client.get_logger().info(f"Current TCP position: x={current_pose.pose.position.x:.3f}, "
                                         f"y={current_pose.pose.position.y:.3f}, "
                                         f"z={current_pose.pose.position.z:.3f}")
+            #target_pose.pose.position.z -= 0.022
+            target_pose.pose.position.z -= 0.0
+            result = arm_client.move_to_cartesian_pose(target_pose.pose)
+            arm_client.get_logger().info(f"Move completed: {result}")
         
-        
+            '''
+            current_pose = arm_client.get_current_tcp_pose()
+            target_pose = deepcopy(current_pose)
+            if current_pose is None:
+                arm_client.get_logger().error("Could not get current TCP pose")
+                return
+                
+            arm_client.get_logger().info(f"Current TCP position: x={current_pose.pose.position.x:.3f}, "
+                                        f"y={current_pose.pose.position.y:.3f}, "
+                                        f"z={current_pose.pose.position.z:.3f}")
+            target_pose.pose.position.z += 0.022
+            result = arm_client.move_to_cartesian_pose(target_pose.pose)
+            arm_client.get_logger().info(f"Move completed: {result}")
+            '''
 
         
         rclpy.spin(arm_client)

@@ -111,6 +111,20 @@ def generate_launch_description():
         respawn_delay=3.0
     )
 
+    ## Node for CoreSense navigation cognition module
+    ## TODO Ask if this is the right way to launch the core node within the navigation stack ???????
+    navigation_cognition_core = Node(
+        package='cs4mt_navigation_cognition',
+        executable='cs4mt_navigation_cognition',
+        name='cs4mt_navigation_cognition',
+        output='screen',
+        #parameters=[navigation_cognition_config],
+        remappings=[('/goal_pose', '/goal_pose'),
+            ('/critical_goal', '/critical_goal'),
+            ('/navigate_to_pose/goal', '/navigate_to_pose/goal'),
+            ('/goal_criticality', '/goal_criticality'),]        
+    )
+
     # Single Lifecycle Manager for all navigation nodes
     nav_lifecycle_manager = Node(
             package='nav2_lifecycle_manager',

@@ -1,10 +1,32 @@
-cmake_minimum_required(VERSION 3.1.3)
+cmake_minimum_required(VERSION 3.8)
 project(kmriiwa_moveit)
 
-find_package(catkin REQUIRED)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
+endif()
 
-catkin_package()
+# Find dependencies
+find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  PATTERN "setup_assistant.launch" EXCLUDE)
-install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+# Install launch files (excluding setup_assistant.launch)
+install(
+  DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+  PATTERN "setup_assistant.launch" EXCLUDE
+)
+
+# Install configuration files
+install(
+  DIRECTORY config
+  DESTINATION share/${PROJECT_NAME}
+)
+
+# Testing
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+# Necessary for the package to be found by ament
+ament_package()

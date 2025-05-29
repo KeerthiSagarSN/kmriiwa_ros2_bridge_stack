@@ -6,19 +6,22 @@
   <xacro:include filename="$(find kmriiwa_description)/urdf/iiwa14/iiwa14.xacro"/>
   <!--Import the kmp200 macro -->
   <xacro:include filename="$(find kmriiwa_description)/urdf/kmp200/kmp200.xacro"/>
+  <!--Import the Robot extras macro -->
+  <!-- <xacro:include filename="$(find kmriiwa_description)/urdf/robot_extras/robot_extras.xacro"/> -->
 
   <xacro:property name="arm_base_flange_x_pos" value="0.363" />
   <xacro:property name="arm_base_flange_y_pos" value="-0.184" />
   <xacro:property name="arm_base_flange_z_pos" value="-0.01" />
   <xacro:property name="arm_base_flange_yew" value="-1.5708" />
-  <xacro:property name="riser_flange_height" value="0.26" />
-  <xacro:property name="riser_flange_radius" value="0.121" />
+  <xacro:property name="riser_flange_height" value="0.0" />   <!--Changed stuff here and made zero -->
+  <xacro:property name="riser_flange_radius" value="0.0" />
   <xacro:property name="flange_origin_xyz" value="${arm_base_flange_x_pos} ${arm_base_flange_y_pos} ${arm_base_flange_z_pos+riser_flange_height/2}"/>
   <xacro:property name="flange_origin_rpy" value="0 0 ${arm_base_flange_yew}"/>
 
   <xacro:arg name="robot_name" default="kmriiwa"/>
   <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
-  <xacro:arg name="robot_extras" default="$(find kmriiwa_description)/urdf/robot/empty.xacro" />
+  <!-- <xacro:arg name="robot_extras" default="$(find kmriiwa_description)/urdf/robot_extras/empty.xacro" /> -->
+
 
   <!--kmp200-->
   <xacro:kmp200 robot_name="$(arg robot_name)"/>
@@ -52,7 +55,12 @@
     <origin xyz="0 0 ${riser_flange_height/2}" rpy="0 0 0" />
   </xacro:iiwa14>
 
-  <!-- Optional custom includes such as grippers, sensors, etc... -->
-  <xacro:include filename="$(arg robot_extras)"/>
+  <!-- Import robot extras from a dedicated file -->
+  <xacro:include filename="$(find kmriiwa_description)/urdf/robot_extras/robot_extras.xacro"/>
+  
+  <!-- Instantiate robot extras -->
+  <xacro:iiwa_gripper parent_link="$(arg robot_name)_link_7" robot_name="$(arg robot_name)"/>
+  <xacro:iiwa_arm_camera parent_link="$(arg robot_name)_link_6" robot_name="$(arg robot_name)"/>
+
 
 </robot>

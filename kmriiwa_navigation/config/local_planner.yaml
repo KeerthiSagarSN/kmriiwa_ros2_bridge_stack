@@ -3,7 +3,7 @@ recovery_behaviour_enabled: true
 
 TebLocalPlannerROS:
 
-  odom_topic: odom
+  odom_topic: /kmriiwa/base/state/odom
   map_frame: map
     
   # Trajectory

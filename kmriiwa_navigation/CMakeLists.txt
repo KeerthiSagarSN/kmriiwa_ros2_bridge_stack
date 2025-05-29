@@ -1,14 +1,31 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 project(kmriiwa_navigation)
 
-find_package(catkin REQUIRED COMPONENTS roslaunch)
+# Find dependencies
+find_package(ament_cmake REQUIRED)
+find_package(rclpy REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(tf2_ros REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
+find_package(kmriiwa_arm_control REQUIRED)
 
-
-catkin_package()
-
-roslaunch_add_file_check(launch)
-
+# Install directories
 install(
-	DIRECTORY launch config maps
-	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DIRECTORY
+    launch
+    config
+    maps
+    scripts
+  DESTINATION share/${PROJECT_NAME}
 )
+
+# Testing (optional)
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(launch_testing_ament_cmake REQUIRED)
+  add_launch_test(launch)
+endif()
+
+ament_package()

@@ -1,8 +1,8 @@
-Header header
-float32 a1
-float32 a2
-float32 a3
-float32 a4
-float32 a5
-float32 a6
-float32 a7
+std_msgs/Header header
+float32 kmriiwa_joint_1
+float32 kmriiwa_joint_2
+float32 kmriiwa_joint_3
+float32 kmriiwa_joint_4
+float32 kmriiwa_joint_5
+float32 kmriiwa_joint_6
+float32 kmriiwa_joint_7

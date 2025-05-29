@@ -1,5 +1,5 @@
 Panels:
-  - Class: rviz/Displays
+  - Class: rviz_common/Displays
     Help Height: 78
     Name: Displays
     Property Tree Widget:
@@ -8,21 +8,21 @@ Panels:
         - /Status1
       Splitter Ratio: 0.5
     Tree Height: 498
-  - Class: rviz/Selection
+  - Class: rviz_common/Selection
     Name: Selection
-  - Class: rviz/Tool Properties
+  - Class: rviz_common/Tool Properties
     Expanded:
       - /2D Pose Estimate1
       - /2D Nav Goal1
       - /Publish Point1
     Name: Tool Properties
     Splitter Ratio: 0.5886790156364441
-  - Class: rviz/Views
+  - Class: rviz_common/Views
     Expanded:
       - /Current View1
     Name: Views
     Splitter Ratio: 0.5
-  - Class: rviz/Time
+  - Class: rviz_common/Time
     Experimental: false
     Name: Time
     SyncMode: 0
@@ -36,7 +36,7 @@ Visualization Manager:
   Displays:
     - Alpha: 0.5
       Cell Size: 1
-      Class: rviz/Grid
+      Class: rviz_default_plugins/Grid
       Color: 160; 160; 164
       Enabled: true
       Line Style:
@@ -53,8 +53,16 @@ Visualization Manager:
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
-      Class: rviz/RobotModel
+      Class: rviz_default_plugins/RobotModel
       Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /kmriiwa/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -62,100 +70,7 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        kmriiwa_back_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_back_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_base_top_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_front_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_front_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_laser_B1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_laser_B4_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_ee:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_riser_flange_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
-      Robot Description: kmriiwa/robot_description
       TF Prefix: ""
       Update Interval: 0
       Value: true
@@ -193,98 +108,6 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          kmriiwa_back_left_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_back_right_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_base_footprint:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_base_top_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_front_left_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_front_right_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_laser_B1_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_laser_B4_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_0:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_2:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_3:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_4:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_5:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_7:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_ee:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_riser_flange_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
         Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
@@ -293,28 +116,24 @@ Visualization Manager:
         Show Trail: false
         State Display Time: 0.05 s
         Trail Step Size: 1
-        Trajectory Topic: /move_group/display_planned_path
-      Planning Metrics:
-        Payload: 1
-        Show Joint Torques: false
-        Show Manipulability: false
-        Show Manipulability Index: false
-        Show Weight Limit: false
-        TextHeight: 0.07999999821186066
-      Planning Request:
-        Colliding Link Color: 255; 0; 0
-        Goal State Alpha: 1
-        Goal State Color: 250; 128; 0
-        Interactive Marker Size: 0
-        Joint Violation Color: 255; 0; 255
-        Planning Group: kmriiwa_manipulator
-        Query Goal State: true
-        Query Start State: false
-        Show Workspace: false
-        Start State Alpha: 1
-        Start State Color: 0; 255; 0
-      Planning Scene Topic: /kmriiwa/move_group/monitored_planning_scene
-      Robot Description: /kmriiwa/robot_description
+        Trajectory Topic:
+          Depth: 5
+          Durability Policy: Volatile
+          History Policy: Keep Last
+          Reliability Policy: Reliable
+          Value: /move_group/display_planned_path
+      Planning Scene Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /kmriiwa/move_group/monitored_planning_scene
+      Robot Description:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /kmriiwa/robot_description
       Scene Geometry:
         Scene Alpha: 0.8999999761581421
         Scene Color: 50; 230; 50
@@ -324,104 +143,6 @@ Visualization Manager:
         Voxel Rendering: Occupied Voxels
       Scene Robot:
         Attached Body Color: 150; 50; 150
-        Links:
-          All Links Enabled: true
-          Expand Joint Details: false
-          Expand Link Details: false
-          Expand Tree: false
-          Link Tree Style: Links in Alphabetic Order
-          kmriiwa_back_left_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_back_right_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_base_footprint:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_base_top_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_front_left_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_front_right_wheel_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_laser_B1_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_laser_B4_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_0:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_1:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_2:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_3:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_4:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_5:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_6:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_7:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          kmriiwa_link_ee:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          kmriiwa_riser_flange_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -437,109 +158,27 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        kmriiwa_back_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_back_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_base_footprint:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_base_top_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_front_left_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_front_right_wheel_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_laser_B1_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_laser_B4_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_0:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_1:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_2:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_3:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_4:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_5:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_6:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_7:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        kmriiwa_link_ee:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        kmriiwa_riser_flange_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Loop Animation: true
       Name: Trajectory
       Robot Alpha: 0.30000001192092896
       Robot Color: 150; 50; 150
-      Robot Description: kmriiwa/robot_description
+      Robot Description:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /kmriiwa/robot_description
       Show Robot Collision: false
       Show Robot Visual: true
       Show Trail: false
       State Display Time: 0.05 s
       Trail Step Size: 1
-      Trajectory Topic: /kmriiwa/move_group/display_planned_path
+      Trajectory Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /kmriiwa/move_group/display_planned_path
       Value: true
   Enabled: true
   Global Options:
@@ -549,26 +188,42 @@ Visualization Manager:
     Frame Rate: 30
   Name: root
   Tools:
-    - Class: rviz/Interact
+    - Class: rviz_default_plugins/Interact
       Hide Inactive Objects: true
-    - Class: rviz/MoveCamera
-    - Class: rviz/Select
-    - Class: rviz/FocusCamera
-    - Class: rviz/Measure
-    - Class: rviz/SetInitialPose
-      Theta std deviation: 0.2617993950843811
-      Topic: /initialpose
-      X std deviation: 0.5
-      Y std deviation: 0.5
-    - Class: rviz/SetGoal
-      Topic: /move_base_simple/goal
-    - Class: rviz/PublishPoint
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+    - Class: rviz_default_plugins/Measure
+      Line color: 128; 128; 0
+    - Class: rviz_default_plugins/SetInitialPose
+      Covariance x: 0.5
+      Covariance y: 0.5
+      Covariance yaw: 0.06853981633974483
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /initialpose
+    - Class: rviz_default_plugins/SetGoal
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /move_base_simple/goal
+    - Class: rviz_default_plugins/PublishPoint
       Single click: true
-      Topic: /clicked_point
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /clicked_point
   Value: true
   Views:
     Current:
-      Class: rviz/Orbit
+      Class: rviz_default_plugins/Orbit
       Distance: 5.609262943267822
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549

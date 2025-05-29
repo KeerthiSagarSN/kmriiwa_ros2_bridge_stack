@@ -94,11 +94,11 @@ def main():
     # IMR ROS1 demo stations
     #[13.792, 2.29008, 0, 0, 1, 0], # Iniital start pose marked near keethi cell
     position_lists_to_station = [        
-        [0.57642, 0.36306, 0.0, 0.0, -0.967486, 0.2529242], # Near corridor in Bay3
-        [-10.96604, -0.5754522, 0, 0, -0.7000717, 0.71407], # 3D Printer station         
-        [-8.11755, -0.7410191, 0.0, 0, -0.681899, 0.731445], # Assembly station with UR         
-        [45.04, 19.455, 0, 0, -0.7034, 0.7107], # Assembly station with UR                       
-        [44.354,30.1771,0.0,0.0,0.0,0.69746,0.7166], # Assembly station with UR               
+        [26.1305, 16.2752, 0, 0, 0, -0.68892, 0.724838], # Near corridor in Bay3
+        #[-10.96604, -0.5754522, 0, 0, -0.7000717, 0.71407], # 3D Printer station         
+        #[-8.11755, -0.7410191, 0.0, 0, -0.681899, 0.731445], # Assembly station with UR         
+        [26.283, 14.6626, 0, 0, 0, -0.0108419, 0.999941], # Assembly station with UR                       
+        [25.1867, 24.4881, 0,0, 0, -0.70744, 1], # Assembly station with UR               
         
 
     ]

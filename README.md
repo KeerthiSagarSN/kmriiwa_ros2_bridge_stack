@@ -104,7 +104,11 @@ This is simlar to the actual navigation with the real-robot
 ```
 ros2 launch kmriiwa_navigation kmr_robot_navigation.launch.py
 ```
-
+#### 2.1 Launching the Navigation with Nav2 and CoreSense Modules
+This is simlar to the actual navigation with the real-robot
+```
+ros2 launch kmriiwa_navigation kmr_robot_navigation_with_cs.launch.py
+```
 #### 3. Merge laser data for localization and mapping
 ```
 ros2 launch kmriiwa_navigation laserscan_merge.launch.py

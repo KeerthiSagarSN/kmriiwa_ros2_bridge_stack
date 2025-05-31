@@ -25,7 +25,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/KMP200.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/KMP200.dae</uri>
           </mesh>
         </geometry>
         <surface>
@@ -91,7 +91,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_0.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_0.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -151,7 +151,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/sensors/collision/sick_lms1xx.stl</uri>
+            <uri>model://kmriiwa/meshes/kmp200/sensors/collision/sick_lms1xx.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -168,7 +168,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/sensors/collision/sick_lms1xx.stl</uri>
+            <uri>model://kmriiwa/meshes/kmp200/sensors/collision/sick_lms1xx.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -185,7 +185,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/KMP200.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/KMP200.dae</uri>
           </mesh>
         </geometry>
         <material>
@@ -200,7 +200,7 @@
         <geometry>
           <mesh>
             <scale>1.06695 1.06695 1.06695</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -209,7 +209,7 @@
         <geometry>
           <mesh>
             <scale>1.06695 1.06695 1.06695</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -227,7 +227,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_0.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_0.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -242,7 +242,7 @@
         <geometry>
           <mesh>
             <scale>1.06695 1.06695 1.06695</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -251,7 +251,7 @@
         <geometry>
           <mesh>
             <scale>1.06695 1.06695 1.06695</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/wheels/omni_wheel_1.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -260,7 +260,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/sensors/visual/sick_lms1xx.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/sensors/visual/sick_lms1xx.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -269,7 +269,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/kmp200/sensors/visual/sick_lms1xx.dae</uri>
+            <uri>model://kmriiwa/meshes/kmp200/sensors/visual/sick_lms1xx.dae</uri>
           </mesh>
         </geometry>
       </visual>
@@ -406,7 +406,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_1.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_1.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -426,7 +426,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_1.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_1.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -477,7 +477,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_2.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_2.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -497,7 +497,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_2.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_2.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -548,7 +548,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_3.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_3.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -568,7 +568,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_3.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_3.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -619,7 +619,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_4.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_4.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -639,7 +639,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_4.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_4.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -690,7 +690,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_5.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_5.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -710,7 +710,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_5.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_5.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -761,7 +761,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_6.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_6.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -781,7 +781,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_6.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_6.stl</uri>
           </mesh>
         </geometry>
         <material>
@@ -851,7 +851,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/collision/link_7.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/collision/link_7.stl</uri>
           </mesh>
         </geometry>
         <surface>
@@ -871,7 +871,7 @@
         <geometry>
           <mesh>
             <scale>1 1 1</scale>
-            <uri>file:///home/imr/ros2_ws_coresense/install/kmriiwa_description/share/kmriiwa_description/meshes/iiwa14/visual/link_7.stl</uri>
+            <uri>model://kmriiwa/meshes/iiwa14/visual/link_7.stl</uri>
           </mesh>
         </geometry>
         <material>

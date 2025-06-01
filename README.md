@@ -25,7 +25,7 @@ To install this package, all its dependencies can be retrieved using rosdep exce
 1. Navigate to the `src` directory of your ROS workspace (e.g. `cd ~/ros2_ws/src`)
 2. Clone [ira_laser_tools](https://github.com/ryanpennings/ira_laser_tools):
 ```
-git clone https://github.com/iralabdisco/ira_laser_tools
+git clone -b humble https://github.com/ryanpennings/ira_laser_tools.git
 ```
 3. Run `cd ~/ros2_ws`
 

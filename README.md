@@ -126,3 +126,8 @@ ros2 run topic_tools relay /kmriiwa/base/command/cmd_vel /cmd_vel
 cd kmriiwa_ros_stack/kmriiwa_navigation/scripts/
 python3 send_multiple_goals_gazebo.py
 ```
+#### 6. Point to point navigation from different stations using CoreSense Architecture
+```
+cd kmriiwa_ros_stack/kmriiwa_navigation/scripts/
+python3 send_multiple_goals_gazebo_with_cs.py
+```

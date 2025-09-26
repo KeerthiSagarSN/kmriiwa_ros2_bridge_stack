@@ -1,14 +1,17 @@
 # KMRIIWA_ROS_STACK
 This metapackage enables to use and control the KMRIIWA robot using ROS-BRIDGE to ROS2. It provides packages for robot's navigation, manipulation, visualisation and simulation. A brief description of thsee packages and a usage guide follows. 
 
-**Note that this package depends on the [kmriiwa_ros_java driver](https://github.com/stoic-roboticist/kmriiwa_ros_java) to be running on the robot for its control.**
+For this repo to work -> **First follow and install ROS1 Drivers as shown here** - > [https://github.com/stoic-roboticist/kmriiwa_ros_stack](https://github.com/stoic-roboticist/kmriiwa_ros_stack)
 
+**Note that this package depends on the [kmriiwa_ros_java driver](https://github.com/stoic-roboticist/kmriiwa_ros_java) to be running on the robot for its control.**
+**This pakcage is a ROS-bridge from ROS1-Noetic to ROS2 Humble**
 **This pakcage was tested on Ubuntu 22 with ROS HUMBLE**
 
 ## Description
 
+
 ### kmriiwa_navigation
-This package allows to control the KMP200 base using the navigation stack. It utilises nav2 package for planning and control.
+This package allows to control the KMP200 base using the navigation stack. It utilises nav2 package for planning and control. Also it allows user to generate map using slam_toolbox from ROS2.
 
 ### kmriiwa_msgs
 This package contains custom ros messages specific to the KMRIIWA robot that allows to convey its status similar to ROS1 message of the repo.
@@ -39,6 +42,20 @@ git clone -b humble https://github.com/ryanpennings/ira_laser_tools.git
 The developed stack supports multi-robot applications out of the box and as a result all of its packages run inside a namespace by default. This behavior is controlled via the **use_namespace** and **robot_name** arguments accepted by all the relevent launch scripts. The used namespace is equivalent to the *robot_name* argument inside those launch scripts. If for some reason, you need to run these packages without namespace, set the argument **use_namespace** to false when starting the specific launch script (append **use_namespace:=false** to the specific roslaunch command). 
 
 **Regardless of that, always make sure the *robot_name* argument is equivlent to the parameter *robot_name* set on the driver's application ProcessData running on the controller. If those are different, nothing will work**
+
+### First-time user -> Generate map using teleop. 
+## Move robot using the teleop_twist_keyboard launch the following command 
+```
+ros2 launch kmriiwa_navigation kmriiwa_slam_mapping_using_teleop.launch.py 
+```
+# Ensure speed is minimal press "z" to decrease speed for uniform mapping. 
+# Move around the work area for generating the map
+![Teleop using keyboard](Images/teleop_robot_for_mapping.png)
+### To save map interactively in Rviz2 using slam toolbox panel (Recommended)
+![Slam_toolbox_plugin_in_rviz](Images/slam_toolbox_panel.png)
+![save_map](Images/save_map_slam.png)
+# This should generate the map file in your working directory.
+
 
 ### Static transform between odom, map and robot_base_footprint
 Run this command before launching the navigation stack

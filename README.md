@@ -48,14 +48,13 @@ The developed stack supports multi-robot applications out of the box and as a re
 ```
 ros2 launch kmriiwa_navigation kmriiwa_slam_mapping_using_teleop.launch.py 
 ```
-# Ensure speed is minimal press "z" to decrease speed for uniform mapping. 
-# Move around the work area for generating the map
+### Ensure speed is minimal press "z" to decrease speed for uniform mapping. 
+### Move around the work area for generating the map
 ![Teleop using keyboard](Images/teleop_robot_for_mapping.png)
 ### To save map interactively in Rviz2 using slam toolbox panel (Recommended)
 ![Slam_toolbox_plugin_in_rviz](Images/slam_toolbox_panel.png)
+### This should generate the map file in your working directory.
 ![save_map](Images/save_map_slam.png)
-# This should generate the map file in your working directory.
-
 
 ### Static transform between odom, map and robot_base_footprint
 Run this command before launching the navigation stack

@@ -13,13 +13,6 @@ def generate_launch_description():
     pkg_kmriiwa_bringup = get_package_share_directory('kmriiwa_bringup')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
-
-    # For Groot monitoring
-    # enable_groot_arg = DeclareLaunchArgument(
-    #     'enable_groot_monitoring',
-    #     default_value='true',
-    #     description='Enable Groot ZMQ monitoring for behavior tree visualization'
-    # )
     # Launch arguments
     map_yaml_file = LaunchConfiguration('map')
     map_arg = DeclareLaunchArgument(
@@ -99,32 +92,6 @@ def generate_launch_description():
         parameters=[os.path.join(pkg_kmriiwa_nav, 'config', 'nav2_params.yaml')]
     )
 
-    # Groot monitoring - Remove if not necessary in the future
-    nav2_zmq_bridge = Node(
-        package='groot_test_cpp',
-        executable='nav2_zmq_bridge',
-        name='nav2_zmq_bridge',
-        output='screen',
-        parameters=[{'use_sim_time': False,}],
-        # condition=IfCondition(LaunchConfiguration('enable_groot_monitoring')),
-        respawn=True,
-        respawn_delay=3.0
-    )
-
-    ## Node for CoreSense navigation cognition module
-    ## TODO Ask if this is the right way to launch the core node within the navigation stack ???????
-    # navigation_cognition_core = Node(
-    #     package='cs4mt_navigation_cognition',
-    #     executable='cs4mt_navigation_cognition',
-    #     name='cs4mt_navigation_cognition',
-    #     output='screen',
-    #     #parameters=[navigation_cognition_config],
-    #     remappings=[('/goal_pose', '/goal_pose'),
-    #         ('/critical_goal', '/critical_goal'),
-    #         ('/navigate_to_pose/goal', '/navigate_to_pose/goal'),
-    #         ('/goal_criticality', '/goal_criticality'),]        
-    # )
-
     # Single Lifecycle Manager for all navigation nodes
     nav_lifecycle_manager = Node(
             package='nav2_lifecycle_manager',
@@ -197,9 +164,7 @@ def generate_launch_description():
         planner_server,
         behavior_server,
         bt_navigator,
-        nav2_zmq_bridge,
         nav_lifecycle_manager,
         robot_bringup,
-        rviz,
-        # navigation_cognition_core # COresense modules
+        rviz
     ])

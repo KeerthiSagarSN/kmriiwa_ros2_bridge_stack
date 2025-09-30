@@ -1,4 +1,4 @@
-image: bay3_map.pgm
+image: bay3_cs.pgm
 mode: trinary
 resolution: 0.05
 origin: [-12.2, -26.3, 0]

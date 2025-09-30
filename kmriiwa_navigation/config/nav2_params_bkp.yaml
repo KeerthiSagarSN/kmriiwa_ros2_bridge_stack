@@ -110,21 +110,15 @@ controller_server:
     # Goal checker parameters
     general_goal_checker:
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.20 #0.05 is too tight and doesnt meet it, 0.25
-      yaw_goal_tolerance: 0.20 #0.05 is too tight and doesnt meet it. 0.25
+      xy_goal_tolerance: 0.25 #0.05 is too tight and doesnt meet it, 0.25
+      yaw_goal_tolerance: 0.25 #0.05 is too tight and doesnt meet it. 0.25
       stateful: true
 
     # DWB parameters
     FollowPath:
       plugin: "nav2_mppi_controller::MPPIController"
-      time_steps: 56
-      model_dt: 0.05
-      batch_size: 2000
-      #model_dt: 0.05 # Delete this when not using mppi
+      model_dt: 0.05 # Delete this when not using mppi
       debug_trajectory_details: True
-      vx_std: 0.2
-      vy_std: 0.1      # Enable Y velocity sampling
-      wz_std: 0.1
       min_vel_x: -0.1 # Previously -0.26
       vx_min: -0.2 # MPPI stuff
       min_vel_y: -0.1 # Seems to not work, even though omni
@@ -133,12 +127,11 @@ controller_server:
       vx_max: 0.2 # MPPI stuff
       max_vel_y: 0.1 # Seems to not work, even though omni
       vy_max: 0.1 # MPPI stuff
-      max_vel_theta: 0.1 # Previously 1.0 - Very good speed but trip in emergency
-      wz_max: 0.2 # MPPI stuff
+      max_vel_theta: 0.2 # Previously 1.0 - Very good speed but trip in emergency
+      wz_max: 0.5 # MPPI stuff
       min_speed_xy: -0.15 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
       max_speed_xy: 0.15 # Really shit with 0.26
       min_speed_theta: 0.0
-      motion_model: "Omni" 
       ax_max: 1.5
       ax_min: -1.5
       ay_max: 1.5
@@ -148,7 +141,7 @@ controller_server:
       acc_lim_theta: 0.3 # Previiuksy 3.2
       decel_lim_x: -0.5 #-2.5
       decel_lim_y: -0.5 #-2.5
-      decel_lim_theta: -0.3 #-3.2
+      decel_lim_theta: -0.5#-3.2
       vx_samples: 20
       vy_samples: 20
       vtheta_samples: 20
@@ -156,21 +149,12 @@ controller_server:
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.20 #0.25
+      xy_goal_tolerance: 0.40 #0.25
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
       critics: ["ConstraintCritic", "CostCritic", "GoalAngleCritic", "GoalCritic", "ObstaclesCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"] # Removed "RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"
       # BaseObstacle.scale: 0.02 - very close to obstacle
-        # Critic weights
-      ConstraintCritic.cost_weight: 4.0
-      GoalCritic.cost_weight: 5.0
-      GoalAngleCritic.cost_weight: 3.0
-      PreferForwardCritic.cost_weight: 5.0
-      ObstaclesCritic.cost_weight: 50.0
-      PathAlignCritic.cost_weight: 14.0
-      PathFollowCritic.cost_weight: 10.0
-      CostCritic.cost_weight: 3.81
       BaseObstacle.scale: 0.05
       PathAlign.scale: 32.0
       GoalAlign.scale: 24.0

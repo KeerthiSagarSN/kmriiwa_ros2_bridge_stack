@@ -100,16 +100,16 @@ def generate_launch_description():
     )
 
     # Groot monitoring - Remove if not necessary in the future
-    nav2_zmq_bridge = Node(
-        package='groot_test_cpp',
-        executable='nav2_zmq_bridge',
-        name='nav2_zmq_bridge',
-        output='screen',
-        parameters=[{'use_sim_time': False,}],
-        # condition=IfCondition(LaunchConfiguration('enable_groot_monitoring')),
-        respawn=True,
-        respawn_delay=3.0
-    )
+    # nav2_zmq_bridge = Node(
+    #     package='groot_test_cpp',
+    #     executable='nav2_zmq_bridge',
+    #     name='nav2_zmq_bridge',
+    #     output='screen',
+    #     parameters=[{'use_sim_time': False,}],
+    #     # condition=IfCondition(LaunchConfiguration('enable_groot_monitoring')),
+    #     respawn=True,
+    #     respawn_delay=3.0
+    # )
 
     ## Node for CoreSense navigation cognition module
     ## TODO Ask if this is the right way to launch the core node within the navigation stack ???????
@@ -197,9 +197,9 @@ def generate_launch_description():
         planner_server,
         behavior_server,
         bt_navigator,
-        nav2_zmq_bridge,
+        #nav2_zmq_bridge,
         nav_lifecycle_manager,
         robot_bringup,
         rviz,
-        # navigation_cognition_core # COresense modules
+        #navigation_cognition_core # COresense modules
     ])

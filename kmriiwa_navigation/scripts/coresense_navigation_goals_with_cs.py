@@ -154,7 +154,7 @@ def main():
     # Format: [x, y, z, qx, qy, qz, qw, is_critical]
     waypoint_goals = [
         {
-            'pose': [-5.849,-0.98859,0.0,0.0,0.0,0,0.99999],
+            'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
             'critical': False,
             'description': 'Near corridor in Bay3'
         },
@@ -164,15 +164,15 @@ def main():
         #     'description': 'Assembly station with UR - CRITICAL'
         # },
         {
-            'pose': [-11.207,-0.98859,0.0,0.0,0.0,0,0.99999],
-            'critical': False,
+            'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+            'critical': True,
             'description': 'Final assembly station'
         },
-        {
-            'pose': [-0.975179,-0.98859,0.0,0.0,0.0,0,0.99999],
-            'critical': False,
-            'description': 'Near 3D Printing Station'
-        },
+        # {
+        #     'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
+        #     'critical': False,
+        #     'description': 'Near 3D Printing Station'
+        # },
 
     ]
     

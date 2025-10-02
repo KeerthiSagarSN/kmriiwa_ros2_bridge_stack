@@ -124,7 +124,7 @@ controller_server:
       debug_trajectory_details: True
       vx_std: 0.2
       vy_std: 0.1      # Enable Y velocity sampling
-      wz_std: 0.1
+      wz_std: 0.2
       min_vel_x: -0.1 # Previously -0.26
       vx_min: -0.2 # MPPI stuff
       min_vel_y: -0.1 # Seems to not work, even though omni
@@ -133,7 +133,7 @@ controller_server:
       vx_max: 0.2 # MPPI stuff
       max_vel_y: 0.1 # Seems to not work, even though omni
       vy_max: 0.1 # MPPI stuff
-      max_vel_theta: 0.1 # Previously 1.0 - Very good speed but trip in emergency
+      max_vel_theta: 0.2 # Previously 1.0 - Very good speed but trip in emergency
       wz_max: 0.2 # MPPI stuff
       min_speed_xy: -0.15 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
       max_speed_xy: 0.15 # Really shit with 0.26
@@ -150,7 +150,7 @@ controller_server:
       decel_lim_y: -0.5 #-2.5
       decel_lim_theta: -0.3 #-3.2
       vx_samples: 20
-      vy_samples: 20
+      vy_samples: 10
       vtheta_samples: 20
       sim_time: 1.5
       linear_granularity: 0.05
@@ -166,7 +166,7 @@ controller_server:
       ConstraintCritic.cost_weight: 4.0
       GoalCritic.cost_weight: 5.0
       GoalAngleCritic.cost_weight: 3.0
-      PreferForwardCritic.cost_weight: 5.0
+      PreferForwardCritic.cost_weight: 8.0
       ObstaclesCritic.cost_weight: 50.0
       PathAlignCritic.cost_weight: 14.0
       PathFollowCritic.cost_weight: 10.0

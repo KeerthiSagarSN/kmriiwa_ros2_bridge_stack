@@ -154,7 +154,7 @@ def main():
     # Format: [x, y, z, qx, qy, qz, qw, is_critical]
     waypoint_goals = [
         {
-            'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
+            'pose': [1.30,-7.0,0,0,0,1],
             'critical': False,
             'description': 'Near corridor in Bay3'
         },
@@ -165,9 +165,21 @@ def main():
         # },
         {
             'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+            'critical': False,
+            'description': 'Pre-Final assembly station'
+        },
+
+        {
+            'pose': [0.70,-1.44057,0,0,-0.99971,0.0076],
             'critical': True,
             'description': 'Final assembly station'
         },
+        # {
+        #     'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+        #     'critical': False,
+        #     'description': 'Pre-Final assembly station'
+        # },
+
         # {
         #     'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
         #     'critical': False,

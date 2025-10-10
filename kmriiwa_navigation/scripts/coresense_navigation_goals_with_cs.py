@@ -12,6 +12,7 @@ from threading import Lock
 from rclpy.duration import Duration
 from action_msgs.msg import GoalStatus
 from rclpy.callback_groups import ReentrantCallbackGroup
+import time
 
 class NavigationClient(Node):
     def __init__(self):
@@ -152,39 +153,63 @@ def main():
     
     # Define goals with criticality annotations
     # Format: [x, y, z, qx, qy, qz, qw, is_critical]
-    waypoint_goals = [
-        {
-            'pose': [1.30,-7.0,0,0,0,1],
-            'critical': False,
-            'description': 'Near corridor in Bay3'
-        },
-        # {
-        #     'pose': [-7.62124,-1.274557,0.0,0.0,0.0,-0.0019542,0.99999],
-        #     'critical': False,  # Mark this as critical
-        #     'description': 'Assembly station with UR - CRITICAL'
-        # },
-        {
-            'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
-            'critical': False,
-            'description': 'Pre-Final assembly station'
-        },
+    for i in range(3):
+        waypoint_goals = [
+            {
+                'pose': [1.30,-7.0,0,0,0,1],
+                'critical': False,
+                'pause_duration': 2.0,
+                'description': 'Near corridor in Bay3'
+            },
+            # {
+            #     'pose': [-7.62124,-1.274557,0.0,0.0,0.0,-0.0019542,0.99999],
+            #     'critical': False,  # Mark this as critical
+            #     'description': 'Assembly station with UR - CRITICAL'
+            # },
+            {
+                'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+                'critical': False,
+                'pause_duration': 2.0,
+                'description': 'Pre-Final assembly station'
+            },
 
-        {
-            'pose': [0.70,-1.44057,0,0,-0.99971,0.0076],
-            'critical': True,
-            'description': 'Final assembly station'
-        },
-        # {
-        #     'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
-        #     'critical': False,
-        #     'description': 'Pre-Final assembly station'
-        # },
+            {
+                'pose': [0.75,-1.44057,0,0,-0.99971,0.0076],
+                'critical': True,
+                'pause_duration': 20.0,
+                'description': 'Final assembly station'
+            },
 
-        # {
-        #     'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
-        #     'critical': False,
-        #     'description': 'Near 3D Printing Station'
-        # },
+            {
+                'pose': [1.21,-1.44057,0,0,-0.99971,0.0076],
+                'critical': False,
+                'pause_duration': 2.0,
+                'description': 'Pre-Final assembly station'
+            },
+
+            {
+                'pose': [1.40,-3.0,0,0,0,1],
+                'critical': False,
+                'pause_duration': 2.0,
+                'description': 'Near corridor in Bay3'
+            },
+            {
+                'pose': [1.30,-7.0,0,0,0,1],
+                'critical': False,
+                'pause_duration': 2.0,
+                'description': 'Near corridor in Bay3'
+            },
+            # {
+            #     'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+            #     'critical': False,
+            #     'description': 'Pre-Final assembly station'
+            # },
+
+            # {
+            #     'pose': [1.30,-6.0,0,0,-0.99971,0.0076],
+            #     'critical': False,
+            #     'description': 'Near 3D Printing Station'
+            # },
 
     ]
     
@@ -203,6 +228,12 @@ def main():
                 rclpy.spin_once(navigator)
             
             navigator.get_logger().info(f"Completed: {goal_info['description']}")
+
+            # Pause if duration specified
+            pause_duration = goal_info.get('pause_duration', 0.0)
+            if pause_duration > 0:
+                navigator.get_logger().info(f'Pausing for {pause_duration} seconds...')
+                time.sleep(pause_duration)
             
     except KeyboardInterrupt:
         navigator.get_logger().info('Navigation sequence interrupted')

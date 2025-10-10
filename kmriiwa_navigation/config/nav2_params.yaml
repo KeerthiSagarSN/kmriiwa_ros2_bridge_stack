@@ -144,19 +144,19 @@ controller_server:
       ay_max: 1.5
       az_max: 1.5
       acc_lim_x: 0.3
-      acc_lim_y: 0.3 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
-      acc_lim_theta: 0.3 # Previiuksy 3.2
+      acc_lim_y: 0.05 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
+      acc_lim_theta: 0.1 # Previiuksy 3.2
       decel_lim_x: -0.5 #-2.5
-      decel_lim_y: -0.5 #-2.5
-      decel_lim_theta: -0.3 #-3.2
+      decel_lim_y: -0.05 #-2.5
+      decel_lim_theta: -0.1 #-3.2
       vx_samples: 20
-      vy_samples: 10
-      vtheta_samples: 20
+      vy_samples: 5
+      vtheta_samples: 10
       sim_time: 1.5
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.20 #0.25
+      xy_goal_tolerance: 0.15 #0.25
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True

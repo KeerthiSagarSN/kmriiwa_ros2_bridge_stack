@@ -48,6 +48,12 @@ The developed stack supports multi-robot applications out of the box and as a re
 ```
 ros2 launch kmriiwa_navigation kmriiwa_slam_mapping_using_teleop.launch.py 
 ```
+## Configure and activate slam toolbox lifecycle node
+```
+ros2 lifecycle set /slam_toolbox configure
+ros2 lifecycle set /slam_toolbox activate
+```
+
 ### Ensure speed is minimal press "z" to decrease speed for uniform mapping. 
 ### Move around the work area for generating the map
 ![Teleop using keyboard](Images/teleop_robot_for_mapping.png)

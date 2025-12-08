@@ -122,33 +122,33 @@ controller_server:
       batch_size: 2000
       #model_dt: 0.05 # Delete this when not using mppi
       debug_trajectory_details: True
-      vx_std: 0.2
-      vy_std: 0.1      # Enable Y velocity sampling
-      wz_std: 0.2
-      min_vel_x: -0.1 # Previously -0.26
-      vx_min: -0.2 # MPPI stuff
-      min_vel_y: -0.1 # Seems to not work, even though omni
-      vy_min: -0.1
-      max_vel_x: 0.1 # Previously 0.26
-      vx_max: 0.2 # MPPI stuff
-      max_vel_y: 0.1 # Seems to not work, even though omni
-      vy_max: 0.1 # MPPI stuff
-      max_vel_theta: 0.2 # Previously 1.0 - Very good speed but trip in emergency
-      wz_max: 0.2 # MPPI stuff
-      min_speed_xy: -0.15 # Preopvilsy 0.0, seeing if this performs good, Really shit with -0.26, setting it to 0.0
-      max_speed_xy: 0.15 # Really shit with 0.26
+      vx_std: 0.15
+      vy_std: 0.05       # Keep low - minimal sideways
+      wz_std: 0.15
+      min_vel_x: -0.20   # Match vx_min - good reverse
+      vx_min: -0.20      # Match min_vel_x
+      min_vel_y: -0.05   # Reduced - minimal sideways
+      vy_min: -0.05
+      max_vel_x: 0.20    # Match vx_max - faster!
+      vx_max: 0.20       # Match max_vel_x
+      max_vel_y: 0.05    # Reduced - minimal sideways
+      vy_max: 0.05
+      max_vel_theta: 0.3 # Faster rotation
+      wz_max: 0.3
+      min_speed_xy: -0.20
+      max_speed_xy: 0.20
       min_speed_theta: 0.0
       motion_model: "Omni" 
-      ax_max: 1.5
-      ax_min: -1.5
-      ay_max: 1.5
-      az_max: 1.5
-      acc_lim_x: 0.3
-      acc_lim_y: 0.05 # Acceleration previously set to 0.0, seeing if it works for omni- y direction
-      acc_lim_theta: 0.1 # Previiuksy 3.2
-      decel_lim_x: -0.5 #-2.5
-      decel_lim_y: -0.05 #-2.5
-      decel_lim_theta: -0.1 #-3.2
+      ax_max: 1.2
+      ax_min: -1.2
+      ay_max: 1.2
+      az_max: 1.2
+      acc_lim_x: 0.4     # Faster acceleration
+      acc_lim_y: 0.05
+      acc_lim_theta: 0.15
+      decel_lim_x: -0.6   # Faster deceleration
+      decel_lim_y: -0.05
+      decel_lim_theta: -0.15
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 10
@@ -160,23 +160,17 @@ controller_server:
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
-      critics: ["ConstraintCritic", "CostCritic", "GoalAngleCritic", "GoalCritic", "ObstaclesCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"] # Removed "RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"
-      # BaseObstacle.scale: 0.02 - very close to obstacle
-        # Critic weights
+      critics: ["ConstraintCritic", "CostCritic", "GoalAngleCritic", "GoalCritic", "ObstaclesCritic", "PathAlignCritic", "PathFollowCritic", "PreferForwardCritic"]
+      # Critic weights
       ConstraintCritic.cost_weight: 4.0
-      GoalCritic.cost_weight: 5.0
+      GoalCritic.cost_weight: 10.0           # Strong goal attraction
       GoalAngleCritic.cost_weight: 3.0
-      PreferForwardCritic.cost_weight: 8.0
+      PreferForwardCritic.cost_weight: 10.0  # Balanced forward preference
+      PreferForwardCritic.threshold: 0.5     # Only penalize if >50% lateral
       ObstaclesCritic.cost_weight: 50.0
-      PathAlignCritic.cost_weight: 14.0
-      PathFollowCritic.cost_weight: 10.0
+      PathAlignCritic.cost_weight: 15.0
+      PathFollowCritic.cost_weight: 12.0
       CostCritic.cost_weight: 3.81
-      BaseObstacle.scale: 0.05
-      PathAlign.scale: 32.0
-      GoalAlign.scale: 24.0
-      PathDist.scale: 32.0
-      GoalDist.scale: 24.0
-      RotateToGoal.scale: 32.0
 
 
 
@@ -230,6 +224,7 @@ local_costmap:
       resolution: 0.05
       #robot_radius: 0.22 # KMRIIWA not round base , but polygon chaning this
       footprint: "[[0.60,0.375],[0.60,-0.375],[-0.60,-0.375],[-0.60,0.375]]"
+      footprint_padding: 0.10 
       clearing_rotation_allowed: true
       plugins: ["obstacle_layer", "inflation_layer"]
       inflation_layer:
@@ -247,9 +242,9 @@ local_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          raytrace_max_range: 7.0
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
+          obstacle_max_range: 5.0
           obstacle_min_range: 0.0
       always_send_full_costmap: True
 
@@ -265,6 +260,7 @@ global_costmap:
       use_sim_time: false
       #robot_radius: 0.22
       footprint: "[[0.60,0.375],[0.60,-0.375],[-0.60,-0.375],[-0.60,0.375]]"
+      footprint_padding: 0.10 
       #footprint: "[[0.60,0.355],[0.60,-0.355],[-0.60,-0.355],[-0.60,0.355]]" - Too close
       resolution: 0.05
       track_unknown_space: true
@@ -279,17 +275,17 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          raytrace_max_range: 7.0
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
+          obstacle_max_range: 5.0
           obstacle_min_range: 0.0
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55 # Kept default value
+        cost_scaling_factor: 5.0
+        inflation_radius: 2.0 # Kept default value
         #inflation_radius: 0.20
       always_send_full_costmap: True
 rviz:

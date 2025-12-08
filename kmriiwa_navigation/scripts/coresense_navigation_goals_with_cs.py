@@ -29,6 +29,9 @@ class NavigationClient(Node):
         self.mutex1 = Lock()
         self.traj_response = String()
         self.navigation_complete = False
+
+        # Publisher to trigger ArUco recording
+        self.aruco_start_pub = self.create_publisher(Bool, '/start_aruco_recording', 10)
         
     # def send_goal_with_criticality(self, x, y, z, is_critical=False, orientation_w=1.0):
     #     """Send navigation goal with criticality annotation"""
@@ -65,11 +68,11 @@ class NavigationClient(Node):
         goal_pose_msg.header.stamp = self.get_clock().now().to_msg()
         goal_pose_msg.pose.position.x = float(pose_array[0])
         goal_pose_msg.pose.position.y = float(pose_array[1])
-        goal_pose_msg.pose.position.z = 0.0
-        goal_pose_msg.pose.orientation.x = float(pose_array[2])
-        goal_pose_msg.pose.orientation.y = float(pose_array[3])
-        goal_pose_msg.pose.orientation.z = float(pose_array[4])
-        goal_pose_msg.pose.orientation.w = float(pose_array[5])
+        goal_pose_msg.pose.position.z = float(pose_array[2])
+        goal_pose_msg.pose.orientation.x = float(pose_array[3])
+        goal_pose_msg.pose.orientation.y = float(pose_array[4])
+        goal_pose_msg.pose.orientation.z = float(pose_array[5])
+        goal_pose_msg.pose.orientation.w = float(pose_array[6])
         
         # Publish critical flag
         critical_msg = Bool()
@@ -108,11 +111,11 @@ class NavigationClient(Node):
         
         goal_msg.pose.pose.position.x = float(pose_array[0])
         goal_msg.pose.pose.position.y = float(pose_array[1])
-        goal_msg.pose.pose.position.z = 0.0
-        goal_msg.pose.pose.orientation.x = float(pose_array[2])
-        goal_msg.pose.pose.orientation.y = float(pose_array[3])
-        goal_msg.pose.pose.orientation.z = float(pose_array[4])
-        goal_msg.pose.pose.orientation.w = float(pose_array[5])
+        goal_msg.pose.pose.position.z = float(pose_array[2])
+        goal_msg.pose.pose.orientation.x = float(pose_array[3])
+        goal_msg.pose.pose.orientation.y = float(pose_array[4])
+        goal_msg.pose.pose.orientation.z = float(pose_array[5])
+        goal_msg.pose.pose.orientation.w = float(pose_array[6])
 
         return self._send_navigation_goal(goal_msg)
 
@@ -146,6 +149,14 @@ class NavigationClient(Node):
             self.get_logger().info(f'Navigation failed with status: {status}')
         return result
 
+    def trigger_aruco_recording(self):
+        """Send signal to start ArUco recording"""
+        msg = Bool()
+        msg.data = True
+        self.aruco_start_pub.publish(msg)
+        self.get_logger().info('🎯 Sent ArUco recording start signal')
+
+
 
 def main():
     rclpy.init()
@@ -156,48 +167,48 @@ def main():
     for i in range(3):
         waypoint_goals = [
             {
-                'pose': [1.30,-7.0,0,0,0,1],
+                'pose': [4.05353, -8.42319, 0,0, 0, -0.714679, 0.699453],
                 'critical': False,
                 'pause_duration': 2.0,
-                'description': 'Near corridor in Bay3'
+                'description': '3D Printing station'
             },
             # {
-            #     'pose': [-7.62124,-1.274557,0.0,0.0,0.0,-0.0019542,0.99999],
+            #     'pose': [2.179717,-0.59837,0.0,0.0,0.0,-0.70864,0.7055],
             #     'critical': False,  # Mark this as critical
-            #     'description': 'Assembly station with UR - CRITICAL'
+            #     'description': 'Midway'
             # },
             {
-                'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
+                'pose': [2.6054,1.7953317,0.0,0,0,0.999299,0.037412],
                 'critical': False,
                 'pause_duration': 2.0,
                 'description': 'Pre-Final assembly station'
             },
 
             {
-                'pose': [0.75,-1.44057,0,0,-0.99971,0.0076],
+                'pose': [1.85502,1.87087,0.0,0,0,0.99914,0.04144],
                 'critical': True,
                 'pause_duration': 20.0,
                 'description': 'Final assembly station'
             },
 
             {
-                'pose': [1.21,-1.44057,0,0,-0.99971,0.0076],
+                'pose': [2.6054,1.7953317,0.0,0,0,0.999299,0.037412],
                 'critical': False,
                 'pause_duration': 2.0,
                 'description': 'Pre-Final assembly station'
             },
 
+            # {
+            #     'pose': [2.179717,-0.59837,0.0,0.0,0.0,-0.70864,0.7055],
+            #     'critical': False,
+            #     'pause_duration': 2.0,
+            #     'description': 'Midway'
+            # },
             {
-                'pose': [1.40,-3.0,0,0,0,1],
+                'pose': [4.05353, -8.42319, 0,0, 0, -0.714679, 0.699453],
                 'critical': False,
                 'pause_duration': 2.0,
-                'description': 'Near corridor in Bay3'
-            },
-            {
-                'pose': [1.30,-7.0,0,0,0,1],
-                'critical': False,
-                'pause_duration': 2.0,
-                'description': 'Near corridor in Bay3'
+                'description': '3D Printing station'
             },
             # {
             #     'pose': [1.19,-1.44057,0,0,-0.99971,0.0076],
@@ -233,6 +244,12 @@ def main():
             pause_duration = goal_info.get('pause_duration', 0.0)
             if pause_duration > 0:
                 navigator.get_logger().info(f'Pausing for {pause_duration} seconds...')
+
+                # Trigger ArUco estimation if this is a critical goal
+                if goal_info['critical']:
+                    navigator.get_logger().info('Critical goal reached - Starting ArUco pose estimation')
+                    navigator.trigger_aruco_recording()
+                
                 time.sleep(pause_duration)
             
     except KeyboardInterrupt:
